@@ -3,8 +3,8 @@
 //
 #include <stdio.h>
 #include <stdlib.h>
-#include "../library/pointerList.h"
-#include "../library/intList.h"
+#include "../../library/pointerList.h"
+#include "../../library/intList.h"
 
 int reverseComparator(int i, int j) {
     return j - i;

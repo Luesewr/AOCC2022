@@ -1,17 +1,10 @@
 # ninja log v5
-1	175	6915846492972737	build.ninja	eb3bd94c0500df5c
+1	175	6915852511173609	build.ninja	eb3bd94c0500df5c
 1	51	6915845368531479	CMakeFiles/main.dir/days/day1_1.c.obj	19b156b040aa6670
 2	78	6915830876803430	CMakeFiles/main.dir/library/intList.c.obj	c0d08f44afdb5812
 4	72	6915830876748283	CMakeFiles/main.dir/library/pointerList.c.obj	7d079bfeaea7b5d7
-52	120	6915845369194436	main.exe	e90f8655ad12f4ef
-1	43	6915846502106919	CMakeFiles/main.dir/days/day1_2.c.obj	42cc9f4c122c5b85
-1	54	6915848957070775	CMakeFiles/main.dir/days/day1_2.c.obj	42cc9f4c122c5b85
-55	125	6915848957758142	main.exe	31bd0a0450b17858
-1	53	6915849832434462	CMakeFiles/main.dir/days/day1_2.c.obj	42cc9f4c122c5b85
-54	130	6915849833176785	main.exe	31bd0a0450b17858
-1	55	6915850310351574	CMakeFiles/main.dir/days/day1_2.c.obj	42cc9f4c122c5b85
-55	125	6915850311029426	main.exe	31bd0a0450b17858
-1	55	6915850868959859	CMakeFiles/main.dir/days/day1_2.c.obj	42cc9f4c122c5b85
-56	126	6915850869652083	main.exe	31bd0a0450b17858
-1	55	6915850946162289	CMakeFiles/main.dir/days/day1_2.c.obj	42cc9f4c122c5b85
 55	123	6915850946819379	main.exe	31bd0a0450b17858
+1	55	6915850946162289	CMakeFiles/main.dir/days/day1_2.c.obj	42cc9f4c122c5b85
+1	53	6915852541476726	CMakeFiles/main.dir/days/day1/day1_2.c.obj	661dfcc6431e307b
+4	69	6915852541637321	CMakeFiles/main.dir/library/intList.c.obj	c0d08f44afdb5812
+69	138	6915852542302446	main.exe	7c8d9d6ca2aa1ac6
