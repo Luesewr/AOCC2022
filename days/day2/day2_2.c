@@ -15,32 +15,21 @@ int main() {
     while (fgets(line, 5, file)) {
         int score = 0;
         int rock1 = 0, paper1 = 0, scissors1 = 0, lose = 0, draw = 0, win = 0;
+        int input1 = 2, input2 = 2;
         if (line[0] == 'A') {
-            rock1 = 1;
+            input1 = 0;
         } else if (line[0] == 'B') {
-            paper1 = 1;
-        } else if (line[0] == 'C') {
-            scissors1 = 1;
+            input1 = 1;
         }
         if (line[2] == 'X') {
-            lose = 1;
+            input2 = 0;
         } else if (line[2] == 'Y') {
-            draw = 1;
-        } else if (line[2] == 'Z') {
-            win = 1;
+            input2 = 1;
         }
-        if ((win && rock1) || (draw && paper1) || (lose && scissors1)) {
-            score += 2;
-        } else if ((win && paper1) || (draw && scissors1) || (lose && rock1)) {
-            score += 3;
-        } else {
-            score += 1;
-        }
-        if (draw) {
-            score += 3;
-        } else if (win) {
-            score += 6;
-        }
+
+
+        int a = (input1 + input2) % 3;
+        score += (a == 0) * 3 + a + input2 * 3;
         totalScore += score;
     }
 
