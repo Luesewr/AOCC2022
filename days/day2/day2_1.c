@@ -11,8 +11,8 @@ int main() {
 
     int totalScore = 0;
 
-    char line[6];
-    while (fgets(line, 5, file)) {
+    char line[7];
+    while (fgets(line, 6, file)) {
         int score = 0;
         int input1, input2;
         if (line[0] == 'A') {

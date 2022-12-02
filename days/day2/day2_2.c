@@ -11,8 +11,8 @@ int main() {
 
     int totalScore = 0;
 
-    char line[6];
-    while (fgets(line, 5, file)) {
+    char line[7];
+    while (fgets(line, 6, file)) {
         int score = 0;
         int rock1 = 0, paper1 = 0, scissors1 = 0, lose = 0, draw = 0, win = 0;
         int input1 = 2, input2 = 2;
