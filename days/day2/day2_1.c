@@ -13,24 +13,8 @@ int main() {
 
     char line[7];
     while (fgets(line, 6, file)) {
-        int score = 0;
-        int input1, input2;
-        if (line[0] == 'A') {
-            input1 = 0;
-        } else if (line[0] == 'B') {
-            input1 = 1;
-        } else {
-            input1 = 2;
-        }
-        if (line[2] == 'X') {
-            input2 = 0;
-        } else if (line[2] == 'Y') {
-            input2 = 1;
-        } else {
-            input2 = 2;
-        }
-        score += ((input2 - input1 + 3) % 3 * 3 + 3) % 9 + input2 + 1;
-        totalScore += score;
+        int input1 = line[0] - (int) 'A', input2 = line[2] - (int) 'X';
+        totalScore += ((input2 - input1 + 3) % 3 * 3 + 3) % 9 + input2 + 1;
     }
 
     printf("%d\n", totalScore);

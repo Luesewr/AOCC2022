@@ -13,24 +13,9 @@ int main() {
 
     char line[7];
     while (fgets(line, 6, file)) {
-        int score = 0;
-        int rock1 = 0, paper1 = 0, scissors1 = 0, lose = 0, draw = 0, win = 0;
-        int input1 = 2, input2 = 2;
-        if (line[0] == 'A') {
-            input1 = 0;
-        } else if (line[0] == 'B') {
-            input1 = 1;
-        }
-        if (line[2] == 'X') {
-            input2 = 0;
-        } else if (line[2] == 'Y') {
-            input2 = 1;
-        }
-
-
+        int input1 = line[0] - (int) 'A', input2 = line[2] - (int) 'X';
         int a = (input1 + input2) % 3;
-        score += (a == 0) * 3 + a + input2 * 3;
-        totalScore += score;
+        totalScore += ((a == 0) * 3 + a) + (input2 * 3);
     }
 
     printf("%d\n", totalScore);
