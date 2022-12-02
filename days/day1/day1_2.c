@@ -1,6 +1,3 @@
-//
-// Created by Laure on 12/1/2022.
-//
 #include <stdio.h>
 #include <stdlib.h>
 #include "../../library/pointerList.h"
@@ -13,7 +10,7 @@ int reverseComparator(int i, int j) {
 int main() {
     FILE *file;
 
-    file = fopen("../inputs/input_day1_1.txt", "r");
+    file = fopen("../inputs/input_day1.txt", "r");
 
     if (file == NULL) {
         return 1;

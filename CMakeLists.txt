@@ -1,16 +1,20 @@
-cmake_minimum_required(VERSION 3.21)
+#cmake_minimum_required(VERSION 3.21)
 project(pointerList C)
 
 set(CMAKE_C_STANDARD 99)
 
 set(PROJECT_HEADERS
-        #days/day1_1.h
-        days/day1/day1_2.h
+#        days/day1/day1_1.h
+#        days/day1/day1_2.h
+#        days/day2/day2_1.h
+        days/day2/day2_2.h
         library/pointerList.h library/intList.h)
 
 set(PROJECT_SOURCES
-        #days/day1_1.c
-        days/day1/day1_2.c
+#        days/day1/day1_1.c
+#        days/day1/day1_2.c
+#        days/day2/day2_1.c
+        days/day2/day2_2.c
         library/pointerList.c library/intList.c)
 
 add_executable(main ${PROJECT_SOURCES} ${PROJECT_HEADERS})
