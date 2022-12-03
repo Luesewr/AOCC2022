@@ -206,7 +206,7 @@ int partition_ints(int ** arr, int low, int high, int *lp, int (*comparator)(int
             // if pointers are greater than or equal
             // to the right pivot
         else if (comparator(q, *arr[k]) <= 0) {
-            while (comparator(q, *arr[g]) < 0 && comparator(k, g) > 0) {
+            while (comparator(q, *arr[g]) < 0 && k < g) {
                 g--;
             }
             swap(arr[k], arr[g]);

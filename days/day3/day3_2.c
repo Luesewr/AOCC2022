@@ -20,6 +20,27 @@ int orderComparator(int i, int j) {
     return mapToValue(i) - mapToValue(j);
 }
 
+int index_of_int_with_cutoff(PointerList *pointerList, int value, int * offset) {
+    for (int i = *offset; i < pointerList->size; i++) {
+        int current = get_int(pointerList, i);
+        int result = orderComparator(current, value);
+        if (!result) {
+            *offset = i;
+            return i;
+        } else if (result > 0) {
+            if (i > *offset + 1) {
+                *offset = i - 1;
+            }
+            return -1;
+        }
+    }
+    return -1;
+}
+
+int contains_int_with_cutoff(PointerList *pointerList, int value, int * offset) {
+    return index_of_int_with_cutoff(pointerList, value, offset) != -1;
+}
+
 int main() {
     FILE *file;
 
@@ -47,10 +68,11 @@ int main() {
         j++;
         if (j % 3 == 0) {
             PointerList * firstList = ((PointerList *) get_pointer(listList, 0));
+            int offset2 = 0, offset3 = 0;
             for (int i = 0, len = firstList->size; i < len; i++) {
                 int current = get_int(firstList, i);
-                int secondContains = contains_int((PointerList *) get_pointer(listList, 1), current);
-                int thirdContains = contains_int((PointerList *) get_pointer(listList, 2), current);
+                int secondContains = contains_int_with_cutoff((PointerList *) get_pointer(listList, 1), current, &offset2);
+                int thirdContains = contains_int_with_cutoff((PointerList *) get_pointer(listList, 2), current, &offset3);
                 if (secondContains && thirdContains) {
                     totalScore += mapToValue(current);
                     break;
