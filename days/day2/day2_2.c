@@ -18,5 +18,7 @@ int main() {
         totalScore += ((a == 0) * 3 + a) + (input2 * 3);
     }
 
+    fclose(file);
+
     printf("%d\n", totalScore);
 }
