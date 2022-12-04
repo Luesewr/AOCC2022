@@ -62,7 +62,7 @@ int main() {
         }
         sort_ints_with_comparator(list, &orderComparator);
         add_pointer(listList, list);
-        for (int i = 0; i < MAX_ENTRY_SIZE; i++) {
+        for (int i = 0; i <= length; i++) {
             line[i] = 0;
         }
         j++;

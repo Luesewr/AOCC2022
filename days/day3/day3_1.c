@@ -2,8 +2,10 @@
 #include "../../library/pointerList.h"
 #include "../../library/intList.h"
 
+#define MAX_ENTRY_SIZE 50
+
 int findEnd(const char * array) {
-    int i = 50;
+    int i = MAX_ENTRY_SIZE;
     do  {
         i--;
     } while (array[i] != '\n');
@@ -28,8 +30,8 @@ int main() {
     }
 
     int totalScore = 0;
-    char line[50];
-    while (fgets(line, 50, file)) {
+    char line[MAX_ENTRY_SIZE];
+    while (fgets(line, MAX_ENTRY_SIZE, file)) {
         int length = findEnd(line);
         int halfLength = length / 2;
         PointerList * list1 = initialize_pointerlist_of_capacity(halfLength), *list2 = initialize_pointerlist_of_capacity(halfLength);
@@ -52,7 +54,7 @@ int main() {
         totalScore += mapToValue(value);
         delete_pointerlist( list1);
         delete_pointerlist(list2);
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i <= length; i++) {
             line[i] = 0;
         }
     }
