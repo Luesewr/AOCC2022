@@ -31,11 +31,11 @@ int main() {
      * Then loop over all lines.
      */
 
-    char line[13];
+    char line[15];
     int containsCount = 0;
     int * inputs = malloc(sizeof(int) * 4);
 
-    while (fgets(line, 13, file) != NULL) {
+    while (fgets(line, 15, file) != NULL) {
 
         /*
          * Update the pointer to be at the start of the input line.
