@@ -1,10 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/**
+ * @param x Input 1
+ * @param y Input 2
+ * @return the minimum of the 2 inputs.
+ */
 int min(int x, int y) {
     return (x < y) * x + (x >= y) * y;
 }
 
+/**
+ * @param x Input 1
+ * @param y Input 2
+ * @return the maximum of the 2 inputs.
+ */
 int max(int x, int y){
     return (x > y) * x + (x <= y) * y;
 }

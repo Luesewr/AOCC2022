@@ -49,8 +49,9 @@ int main() {
      * Then loop over all lines.
      */
 
-    int curTotal = 0, input;
     char line[20];
+    int curTotal = 0, input;
+
     while (fgets(line, 20, file) != NULL) {
 
         /*

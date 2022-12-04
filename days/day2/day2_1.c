@@ -21,12 +21,11 @@ int main() {
     }
 
     /*
-     * Set up variables to keep track of the total score and to store the input line.
+     * Set up variables to store the input line and to keep track of the total score.
      */
 
-    int totalScore = 0;
-
     char line[7];
+    int totalScore = 0;
 
     /*
      * Loop over all the lines in the input file.

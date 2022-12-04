@@ -4,62 +4,118 @@
 
 #define MAX_ENTRY_SIZE 50
 
-int findEnd(const char * array) {
+/**
+ * Loops backwards in a string to find the size of the string before it reaches a newline character.
+ * @param array The character array (string) with a newline character.
+ * @return the size of the string before it reached a newline character.
+ */
+int findEnd(const char *array) {
     int i = MAX_ENTRY_SIZE;
-    do  {
+    do {
         i--;
     } while (array[i] != '\n');
     return i;
 }
 
+/**
+ * Takes an int, which is actually a secret character, and maps its value to the right priority.
+ * @param x The input number (secretly a character).
+ * @return The priority of the value.
+ */
 int mapToValue(int x) {
     return x - ((x > 92) * 96) - ((x < 92) * 38);
 }
 
-int orderComparator(int i, int j) {
-    return mapToValue(i) - mapToValue(j);
-}
-
+/*
+ * Day 3, Part 1
+ */
 int main() {
+    /*
+     * Setting up the input file.
+     */
+
     FILE *file;
 
     file = fopen("../inputs/input_day3.txt", "r");
+
+    /*
+     * Shutdown program if the file can't be found or another error occurred.
+     */
 
     if (file == NULL) {
         return 1;
     }
 
-    int totalScore = 0;
+    /*
+     * Set up a line variable which will store the line that was read from the file.
+     * Make variable totalScore to keep track of the total score.
+     *
+     * Then loop over all lines.
+     */
+
     char line[MAX_ENTRY_SIZE];
+    int totalScore = 0;
+
     while (fgets(line, MAX_ENTRY_SIZE, file)) {
+
+        /*
+         * Store the length and half length of the input line.
+         */
+
         int length = findEnd(line);
         int halfLength = length / 2;
-        PointerList * list1 = initialize_pointerlist_of_capacity(halfLength), *list2 = initialize_pointerlist_of_capacity(halfLength);
+
+        /*
+         * Initialize 2 lists to store each half of the input line and then store the priority values of those halfs.
+         */
+
+        PointerList *list1 = initialize_pointerlist_of_capacity(halfLength),
+                *list2 = initialize_pointerlist_of_capacity(halfLength);
+
         for (int i = 0; i < halfLength; i++) {
-            add_int(list1, (int) line[i]);
+            add_int(list1, mapToValue((int) line[i]));
         }
+
         for (int i = halfLength; i < length; i++) {
-            add_int(list2, (int) line[i]);
+            add_int(list2, mapToValue((int) line[i]));
         }
-        sort_ints_with_comparator(list1, &orderComparator);
-        sort_ints_with_comparator(list2, &orderComparator);
-        int value;
+
+        /*
+         * Sort both lists based on their priorities.
+         */
+
+        sort_ints(list1);
+        sort_ints(list2);
+
+        /*
+         * Check for each entry in list1 in order of priority if list2 contains it,
+         * if it does set value to that value and break.
+         */
+
         for (int i = 0;; i++) {
             int current = get_int(list1, i);
             if (contains_int(list2, current)) {
-                value = current;
+                totalScore += current;
                 break;
             }
         }
-        totalScore += mapToValue(value);
-        delete_pointerlist( list1);
+
+        /*
+         * Delete the lists and clear the input line variable for as much as it was used.
+         */
+
+        delete_pointerlist(list1);
         delete_pointerlist(list2);
+
         for (int i = 0; i <= length; i++) {
             line[i] = 0;
         }
     }
 
-    fclose(file);
+    /*
+     * Close the file reader and print the result.
+     */
 
+    fclose(file);
     printf("%d\n", totalScore);
 }

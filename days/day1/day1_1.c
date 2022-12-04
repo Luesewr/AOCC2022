@@ -31,8 +31,9 @@ int main() {
      * Then loop over all lines.
      */
 
-    int maxTotal = 0, curTotal = 0, input;
     char line[20];
+    int maxTotal = 0, curTotal = 0, input;
+
     while (fgets(line, 20, file) != NULL) {
 
         /*
