@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 /**
  * @param x Input 1
@@ -23,6 +24,14 @@ int max(int x, int y){
  * Day 4, Part 2
  */
 int main() {
+
+    /*
+     * Set up timer.
+     */
+
+    struct timespec start, end;
+    clock_gettime(CLOCK_REALTIME, &start);
+
     /*
      * Setting up the input file.
      */
@@ -82,4 +91,15 @@ int main() {
     free(inputs);
     fclose(file);
     printf("%d\n", overlapCount);
+
+    /*
+     * Close the timer and print the taken time.
+     */
+
+    clock_gettime(CLOCK_REALTIME, &end);
+
+    double time_spent = (double) (end.tv_sec - start.tv_sec) +
+                        (end.tv_nsec - start.tv_nsec) / 1000000000.0;
+
+    printf("The elapsed time is %f seconds", time_spent);
 }

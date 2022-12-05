@@ -1,9 +1,18 @@
 #include <stdio.h>
+#include <time.h>
 
 /*
  * Day 2, Part 1
  */
 int main() {
+
+    /*
+     * Set up timer.
+     */
+
+    struct timespec start, end;
+    clock_gettime(CLOCK_REALTIME, &start);
+
     /*
      * Setting up the input file.
      */
@@ -55,4 +64,15 @@ int main() {
 
     fclose(file);
     printf("%d\n", totalScore);
+
+    /*
+     * Close the timer and print the taken time.
+     */
+
+    clock_gettime(CLOCK_REALTIME, &end);
+
+    double time_spent = (double) (end.tv_sec - start.tv_sec) +
+                        (end.tv_nsec - start.tv_nsec) / 1000000000.0;
+
+    printf("The elapsed time is %f seconds", time_spent);
 }
