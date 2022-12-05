@@ -6,14 +6,14 @@
 #define MAX_ENTRY_SIZE 50
 
 /**
- * Loops backwards in a string to find the size of the string before it reaches a newline character.
+ * Loops in a string to find the size of the string before it reaches a newline character.
  * @param array The character array (string) with a newline character.
  * @return the size of the string before it reached a newline character.
  */
-int findEnd(const char *array) {
-    int i = MAX_ENTRY_SIZE;
+int findEnd(const char * array) {
+    int i = 0;
     do {
-        i--;
+        i++;
     } while (array[i] != '\n');
     return i;
 }
