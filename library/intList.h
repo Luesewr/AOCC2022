@@ -7,6 +7,8 @@ void add_int_at(PointerList *pointerList, int index, int value);
 
 int get_int(PointerList *pointerList, int index);
 
+int get_last_int(PointerList *pointerList);
+
 void set_int(PointerList *pointerList, int index, int value);
 
 void copy_into_int(void ** array1, int ** array2, int size1, int size2);
@@ -16,6 +18,8 @@ void print_ints(PointerList *pointerList);
 void print_ints_in_capacity(PointerList *pointerList);
 
 int remove_int_at(PointerList *pointerList, int index);
+
+int remove_last_int(PointerList *pointerList);
 
 PointerList *remove_int_if(PointerList *pointerList, int (*predicateFunction)(int));
 

@@ -18,6 +18,10 @@ int get_int(PointerList *pointerList, int index) {
     return *(int *) get_pointer(pointerList, index);
 }
 
+int get_last_int(PointerList *pointerList) {
+    return *(int *) get_pointer(pointerList, pointerList->size - 1);
+}
+
 void set_int(PointerList *pointerList, int index, int value) {
     *(int *) get_pointer(pointerList, index) = value;
 }
@@ -48,6 +52,10 @@ int remove_int_at(PointerList *pointerList, int index) {
     int value = *pointer;
     free(pointer);
     return value;
+}
+
+int remove_last_int(PointerList *pointerList) {
+    return remove_int_at(pointerList, pointerList->size - 1);
 }
 
 PointerList *remove_int_if(PointerList *pointerList, int (*predicateFunction)(int)) {

@@ -154,7 +154,7 @@ void * remove_at(PointerList *pointerlist, int index) {
     }
     pointerlist->size--;
     pointerlist->pointers[pointerlist->size] = 0;
-    if (pointerlist->size <= pointerlist->capacity / 4) {
+    if (pointerlist->size <= pointerlist->capacity / 4 && pointerlist->size > 4) {
         shrink_to_capacity(pointerlist, pointerlist->capacity / 2);
     }
     return result;
