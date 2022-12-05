@@ -3,14 +3,14 @@
 #include "../../library/intList.h"
 #include <time.h>
 
-#define MAX_ENTRY_SIZE 50
+#define MAX_ENTRY_SIZE 55
 
 /**
  * Loops backwards in a string to find the size of the string before it reaches a newline character.
  * @param array The character array (string) with a newline character.
  * @return the size of the string before it reached a newline character.
  */
-int findEnd(const char * array) {
+int findEnd(char * array) {
     int i = MAX_ENTRY_SIZE;
     do  {
         i--;
@@ -126,7 +126,7 @@ int main() {
      * Then loop over all lines.
      */
 
-    char line[MAX_ENTRY_SIZE];
+    char line[MAX_ENTRY_SIZE + 3];
     int totalScore = 0;
     PointerList * listList = initialize_pointerlist_of_capacity(3);
     int j = 0;
@@ -160,7 +160,7 @@ int main() {
          * Clear the input line variable for all that it was used for the next input line.
          */
 
-        for (int i = 0; i <= length; i++) {
+        for (int i = 0; i < MAX_ENTRY_SIZE; i++) {
             line[i] = 0;
         }
 
@@ -217,6 +217,7 @@ int main() {
     /*
      * Close the file reader and print the total score.
      */
+    delete_pointerlist(listList);
 
     fclose(file);
     printf("%d\n", totalScore);
