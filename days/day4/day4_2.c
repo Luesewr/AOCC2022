@@ -101,5 +101,5 @@ int main() {
     double time_spent = (double) (end.tv_sec - start.tv_sec) +
                         (end.tv_nsec - start.tv_nsec) / 1000000000.0;
 
-    printf("The elapsed time is %f seconds", time_spent);
+    printf("The elapsed time is %f seconds\n", time_spent);
 }
