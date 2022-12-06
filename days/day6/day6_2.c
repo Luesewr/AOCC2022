@@ -52,13 +52,26 @@ int main() {
 
     int result = -1;
 
+    int uniqueCount = 0;
+
+    /*
+     * Loop through the characters first 4 characters in the input and add them to the list,
+     * because it is impossible to satisfy the condition.
+     */
+
     /*
      * Loop through the characters first 4 characters in the input and add them to the list,
      * because it is impossible to satisfy the condition.
      */
 
     for (int i = 0; i < 14; i++) {
+
+        if (!contains_int(list, input[i])) {
+            uniqueCount++;
+        }
+
         add_int(list, input[i]);
+
     }
 
     /*
@@ -68,33 +81,20 @@ int main() {
     for (int i = 14; i < filesize - 1; i++) {
 
         /*
-         * Remove the first element of list and add the new character to the end of the list.
+         * Remove the first element of list and add the new character to the end of the list
+         * and update the unique elements counter.
          */
 
-        remove_int_at(list, 0);
+        int removed = remove_int_at(list, 0);
+
+        uniqueCount += !contains_int(list, input[i]) - !contains_int(list, removed);
+
         add_int(list, input[i]);
 
-        /*
-         * Extract all the unique values of the list.
-         */
-
-        PointerList *uniques = unique_ints(list);
-
-        /*
-         * If there are 4 unique characters in the list, set the result index, delete the uniques list and break the loop.
-         */
-
-        if (uniques->size == 14) {
+        if (uniqueCount == 14) {
             result = i + 1;
-            delete_pointerlist(uniques);
             break;
         }
-
-        /*
-         * Clean up the uniques list.
-         */
-
-        delete_pointerlist(uniques);
     }
 
     /*
