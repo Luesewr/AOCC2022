@@ -21,6 +21,8 @@ void shrink_max_amount(PointerList *pointerList);
 
 int delete_pointerlist(PointerList *pointerlist);
 
+int delete_pointerlist_not_pointers(PointerList *pointerlist);
+
 void add_pointer(PointerList *pointerlist, void * pointer);
 
 void set_pointer(PointerList *pointerList, int index, void *pointer);
