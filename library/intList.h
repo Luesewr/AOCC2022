@@ -1,3 +1,5 @@
+#include "pointerList.h"
+
 #ifndef POINTERLIST_INTLIST_H
 #define POINTERLIST_INTLIST_H
 
