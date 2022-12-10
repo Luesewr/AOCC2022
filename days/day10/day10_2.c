@@ -72,8 +72,9 @@ int main() {
 
     for (int i = 0; i < HEIGHT; i++) {
         printf("%s\n", screen[i]);
+        free(screen[i]);
     }
-
+    free(screen);
 
     /*
      * Close the timer and print the taken time.

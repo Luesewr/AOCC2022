@@ -2,33 +2,10 @@
 #include <stdlib.h>
 #include <time.h>
 #include "../../library/pointerList.h"
-
-int signum(int x) {
-    return x < 0 ? -1 : (x > 0);
-}
-
-typedef struct point {
-    int x;
-    int y;
-} point;
-
-point *create_point(int x, int y) {
-    point *new_point = malloc(sizeof(point));
-    new_point->x = x;
-    new_point->y = y;
-    return new_point;
-}
-
-int is_point_equal(point *p1, point *p2) {
-    return (p1->x == p2->x) && (p1->y == p2->y);
-}
-
-void print_point(point *p) {
-    printf("{x: %d, y: %d}\n", p->x, p->y);
-}
+#include "day9_functions.h"
 
 /*
- * Day 9, Part 1
+ * Day 9, Part 2
  */
 int main() {
 
@@ -68,15 +45,14 @@ int main() {
     char line[10];
 
     PointerList *chain = initialize_pointerlist();
-    PointerList *points = initialize_pointerlist();
-    add_pointer(points, create_point(0, 0));
+    pointSet *points = create_point_set(37);
+    add_to_set(points, 0, 0);
 
     for (int i = 0; i < 10; i++) {
         add_pointer(chain, create_point(0, 0));
     }
 
     while (fgets(line, 10, file) != NULL) {
-//        printf("hx: %d, hy: %d, tx: %d, ty: %d\n", hx, hy, tx, ty);
         int dx = 0, dy = 0;
         if (line[0] == 'R') {
             dx = 1;
@@ -106,7 +82,7 @@ int main() {
                 prev = current;
             }
             if (moved) {
-                add_pointer(points, create_point(prev->x, prev->y));
+                add_to_set(points, prev->x, prev->y);
             }
         }
     }
@@ -115,26 +91,11 @@ int main() {
      * Free the allocated memory, close the file reader, and print the result.
      */
 
-    PointerList *uniques = initialize_pointerlist(points->size);
-    for (int i = 0; i < points->size; i++) {
-        point *current = get_pointer(points, i);
-        int broken = 0;
-        for (int j = 0; j < uniques->size; j++) {
-            point *current_check = get_pointer(uniques, j);
-            if (is_point_equal(current, current_check)) {
-                broken = 1;
-            }
-        }
-        if (!broken){
-            add_pointer(uniques, current);
-        }
-    }
-
-    printf("%d\n", uniques->size);
+    printf("%d\n", points->size);
 
     delete_pointerlist(chain);
-    delete_pointerlist(points);
-    delete_pointerlist_not_pointers(uniques);
+    delete_point_set(points);
+//    delete_pointerlist_not_pointers(uniques);
     /*
      * Close the timer and print the taken time.
      */
