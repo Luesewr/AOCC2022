@@ -5,6 +5,12 @@
 #define WIDTH 40
 #define HEIGHT 6
 
+/**
+ * Set the pixel at the current CRT pixel (the cycle) to the right value according to the X.
+ * @param cycle     The current pixel that the CRT monitor is writing to.
+ * @param X         The horizontal position.
+ * @param screen    The 2 dimensional character array where the screen is stored in.
+ */
 void draw_to_screen(int cycle, int X, char ** screen) {
     int CRT_pos = cycle % 40;
     char value = CRT_pos >= X - 1 && CRT_pos <= X + 1 ? '#' : '.';
@@ -40,40 +46,66 @@ int main() {
     }
 
     /*
-     * Set up a line variable which will store the line that was read from the file.
      * Make variables:
-     *  containsCount, to keep track of how many ranges one range fully overlapped another.
-     *  inputs, to store the integers that were on the line.
-     *  ptr, to keep track of which part of the input line were parsing.
-     *
-     * Then loop over all lines.
+     *  line, which will store the line that was read from the file.
+     *  cycle, to keep track of the current cycle.
+     *  X, to keep track of the X value.
+     *  screen, to store all the pixels in the screen.
      */
 
     char line[12];
+
+    int cycle = 0;
+    int X = 1;
+
     char ** screen = malloc(sizeof(char *) * HEIGHT);
+
+    /*
+     * Initialize all the arrays in the screen.
+     */
     for (int i = 0; i < HEIGHT; i++) {
         screen[i] = malloc(sizeof(char) * (WIDTH + 1));
         screen[i][WIDTH] = '\0';
     }
-    int cycle = 0;
-    int X = 1;
 
+    /*
+     * Loop over all the lines in the input.
+     */
     while (fgets(line, 12, file) != NULL) {
+
+        /*
+         * Update the screen with the current state.
+         */
         draw_to_screen(cycle, X, screen);
         cycle += 1;
+
+        /*
+         * If the input is an addx command, read the amount, update the screen and the X position.
+         */
         if (line[0] == 'a') {
+
             char *ptr = line + 5;
             int amount = strtol(ptr, NULL, 10);
+
             draw_to_screen(cycle, X, screen);
+
             X += amount;
+
             cycle += 1;
         }
     }
 
+    /*
+     * Print the screen and free the arrays in the screen variable at the same time.
+     */
     for (int i = 0; i < HEIGHT; i++) {
         printf("%s\n", screen[i]);
         free(screen[i]);
     }
+
+    /*
+     * Deallocate the screen.
+     */
     free(screen);
 
     /*

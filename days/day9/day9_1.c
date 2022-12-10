@@ -5,6 +5,8 @@
 #include "../../library/intList.h"
 #include "day9_functions.h"
 
+#define SET_SIZE 180
+
 /*
  * Day 9, Part 1
  */
@@ -34,58 +36,70 @@ int main() {
     }
 
     /*
-     * Set up a line variable which will store the line that was read from the file.
      * Make variables:
-     *  containsCount, to keep track of how many ranges one range fully overlapped another.
-     *  inputs, to store the integers that were on the line.
-     *  ptr, to keep track of which part of the input line were parsing.
-     *
-     * Then loop over all lines.
+     *  line, which will store the line that was read from the file.
+     *  hx and hy, to keep track of the position of the head knot.
+     *  tx and ty, to keep track of the position of the tail knot.
+     *  points, a set of points with SET_SIZE amount of buckets.
      */
 
     char line[10];
     int hx = 0, hy = 0, tx = 0, ty = 0;
 
-    pointSet *points = create_point_set(37);
-    add_to_set(points, 0, 0);
-    int j = 0;
-
-    while (fgets(line, 10, file) != NULL) {
-//        printf("hx: %d, hy: %d, tx: %d, ty: %d\n", hx, hy, tx, ty);
-        int dx = 0, dy = 0;
-        if (line[0] == 'R') {
-            dx = 1;
-        } else if (line[0] == 'D') {
-            dy = -1;
-        } else if (line[0] == 'L') {
-            dx = -1;
-        } else{
-            dy = 1;
-        }
-        char *ptr = line;
-        ptr += 2;
-        int amount = strtol(ptr, NULL, 10);
-        for (int i = 0; i < amount; i++) {
-            hx += dx;
-            hy += dy;
-            if (abs(hx - tx) > 1 || abs(hy - ty) > 1) {
-                tx += signum(hx - tx);
-                ty += signum(hy - ty);
-                add_to_set(points, tx, ty);
-            }
-        }
-        j++;
-    }
-
-//    print_set(points);
+    pointSet *points = create_point_set(SET_SIZE);
 
     /*
-     * Free the allocated memory, close the file reader, and print the result.
+     * Add point (0; 0) to the set and then loop over all the input.
      */
+    add_to_set(points, 0, 0);
 
+    while (fgets(line, 10, file) != NULL) {
+
+        /*
+         * Get and set the direction of the input.
+         */
+        int dx = (line[0] == 'R') - (line[0] == 'L');
+        int dy = (line[0] == 'U') - (line[0] == 'D');
+
+        /*
+         * Read the amount of moves in said direction.
+         */
+        char *ptr = line + 2;
+        int amount = strtol(ptr, NULL, 10);
+
+        /*
+         * Repeat the amount that was in the line.
+         */
+        for (int i = 0; i < amount; i++) {
+
+            /*
+             * Update the head in the direction specified in the line.
+             */
+            hx += dx;
+            hy += dy;
+
+            /*
+             * Move the tail if the head is more than 1 away from the tail in any direction.
+             * Try to add the new position of the tail to the set of positions.
+             */
+            if (abs(hx - tx) > 1 || abs(hy - ty) > 1) {
+
+                tx += signum(hx - tx);
+                ty += signum(hy - ty);
+
+                add_to_set(points, tx, ty);
+
+            }
+        }
+    }
+
+    /*
+     * Print the size of the set (the result) and delete the set.
+     */
     printf("%d\n", points->size);
 
     delete_point_set(points);
+
     /*
      * Close the timer and print the taken time.
      */

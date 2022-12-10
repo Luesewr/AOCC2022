@@ -31,13 +31,11 @@ int main() {
     }
 
     /*
-     * Set up a line variable which will store the line that was read from the file.
      * Make variables:
-     *  containsCount, to keep track of how many ranges one range fully overlapped another.
-     *  inputs, to store the integers that were on the line.
-     *  ptr, to keep track of which part of the input line were parsing.
-     *
-     * Then loop over all lines.
+     *  line, which will store the line that was read from the file.
+     *  total, to keep track of the total score.
+     *  cycle, to keep track of the current cycle.
+     *  X, to keep track of the X value.
      */
 
     char line[12];
@@ -45,30 +43,49 @@ int main() {
     int cycle = 0;
     int X = 1;
 
+    /*
+     * Loop over all the lines in the input.
+     */
     while (fgets(line, 12, file) != NULL) {
+
+        /*
+         * Check if the line is a noop or an addx.
+         */
         if (line[0] == 'n') {
+
+            /*
+             * Add 1 to the cycle in the case of a noop, add X * cycle to the total at cycle 20 + 40k.
+             */
             cycle += 1;
+
             if (cycle % 40 == 20) {
                 total += X * cycle;
             }
         } else {
+
+            /*
+             * Parse the amount.
+             */
             char *ptr = line + 5;
             int amount = strtol(ptr, NULL, 10);
-            if (cycle % 40 == 18) {
-                cycle += 2;
-                total += X * cycle;
-                X += amount;
-            } else if (cycle % 40 == 19) {
-                cycle += 1;
-                total += X * cycle;
-                X += amount;
-                cycle += 1;
-            } else {
-                cycle += 2;
-                X += amount;
+
+            /*
+             * Act according to what part of the addx we have to update the total, or not.
+             */
+            int mod = cycle % 40;
+            cycle += 2;
+
+            if (mod == 18 || mod == 19) {
+                total += X * (cycle - (mod == 19));
             }
+
+            X += amount;
         }
     }
+
+    /*
+     * Print the total score.
+     */
 
     printf("%d\n", total);
 
