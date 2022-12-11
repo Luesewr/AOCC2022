@@ -9,13 +9,19 @@ void add_int(PointerList *pointerList, int value) {
 }
 
 void add_int_at(PointerList *pointerList, int index, int value) {
-    int *pointer = malloc(sizeof(int) + 1);
-    *pointer = value;
-    set_pointer(pointerList, index, pointer);
+    if (index >= 0) {
+        int *pointer = malloc(sizeof(int) + 1);
+        *pointer = value;
+        set_pointer(pointerList, index, pointer);
+    }
 }
 
 int get_int(PointerList *pointerList, int index) {
-    return *(int *) get_pointer(pointerList, index);
+    int *p = get_pointer(pointerList, index);
+    if (p == NULL) {
+        return -1;
+    }
+    return *p;
 }
 
 int get_last_int(PointerList *pointerList) {

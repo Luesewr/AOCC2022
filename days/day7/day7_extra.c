@@ -3,6 +3,7 @@
 #include "../../library/pointerList.h"
 #include <time.h>
 #include "day7_functions.h"
+#include "../../library/intList.h"
 
 typedef struct stack_element {
     fs_element *element;
@@ -19,7 +20,7 @@ stack_element *create_stack_element(fs_element *element, int indentation, int is
 }
 
 /*
- * Day 7, Part 1
+ * Day 7, Part 3?
  */
 int main() {
 
@@ -51,31 +52,60 @@ int main() {
 
     PointerList *stack = initialize_pointerlist();
     add_pointer(stack, create_stack_element(root, 0, 1));
-
+    PointerList *indentations = initialize_pointerlist();
 
     while (stack->size > 0) {
         stack_element *cur_dir = remove_at(stack, stack->size - 1);
+//        printf("%d, %s", cur_dir->is_end, cur_dir->element->name);
         if (cur_dir->element->type == D) {
+            int indentationStatus = get_int(indentations, cur_dir->indentation);
+            if (indentationStatus == -1) {
+                add_int_at(indentations, cur_dir->indentation, 1);
+            }
+            if (cur_dir->is_end) {
+                add_int_at(indentations, cur_dir->indentation - 1, 0);
+            }
             char padding[3 * cur_dir->indentation + 1];
-            for (int i = 0; i < 3 * cur_dir->indentation; i++) {
-                padding[i] = ' ';
+
+            for (int i = 3 * cur_dir->indentation - 1, found = 0; i >= 0; i--) {
+                if (i % 3 == 0) {
+                    if (get_int(indentations, i)) {
+                        padding[i] = '|';
+                        found = 1;
+                    } else {
+                        padding[i] = found ? ' ' : '-';
+                    }
+                } else {
+                    padding[i] = found ? ' ' : '-';
+                }
             }
             padding[3 * cur_dir->indentation] = '\0';
             printf("%s%s", padding, cur_dir->element->name);
             PointerList *children = cur_dir->element->children;
             for (int i = 0; i < children->size; i++) {
                 fs_element *current = get_pointer(children, i);
-                add_pointer(stack, create_stack_element(current, cur_dir->indentation + 1, i == children->size - 1));
+                add_pointer(stack, create_stack_element(current, cur_dir->indentation + 1, i == 0));
             }
         } else {
             char padding[3 * cur_dir->indentation + 1];
-            for (int i = 0; i < 3 * cur_dir->indentation; i++) {
-                padding[i] = ' ';
+
+            for (int i = 3 * cur_dir->indentation - 1, found = 0; i >= 0; i--) {
+                if (i % 3 == 0) {
+                    if (get_int(indentations, i)) {
+                        padding[i] = '|';
+                        found = 1;
+                    } else {
+                        padding[i] = found ? ' ' : '-';
+                    }
+                } else {
+                    padding[i] = found ? ' ' : '-';
+                }
             }
             padding[3 * cur_dir->indentation] = '\0';
-            printf("%s-%s", padding, cur_dir->element->name);
+            printf("%s%s", padding, cur_dir->element->name);
         }
         free(cur_dir);
+//        print_ints(indentations);
     }
 
     /*

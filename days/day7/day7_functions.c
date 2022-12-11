@@ -96,7 +96,7 @@ void parse_input(fs_element *root, PointerList *directories, PointerList *files)
 
     FILE *file;
 
-    file = fopen("../inputs/testInput_day7.txt", "r");
+    file = fopen("../inputs/input_day7.txt", "r");
 
     /*
      * Shutdown program if the file can't be found or another error occurred.
@@ -122,12 +122,16 @@ void parse_input(fs_element *root, PointerList *directories, PointerList *files)
         /*
          * Check if the directory is being changed.
          */
-        if (line[0] == '$' && line[2] == 'c') {
-            ptr += 5;
-            int go_up = ptr[0] == '.';
-            int go_root = ptr[0] == '/';
-            cur_dir = !go_up && !go_root ? get_dir_by_name(cur_dir, ptr) : (go_up ? cur_dir->parent : root);
-            continue;
+        if (line[0] == '$') {
+            if (line[2] == 'c') {
+                ptr += 5;
+                int go_up = ptr[0] == '.';
+                int go_root = ptr[0] == '/';
+                cur_dir = !go_up && !go_root ? get_dir_by_name(cur_dir, ptr) : (go_up ? cur_dir->parent : root);
+                continue;
+            } else {
+                continue;
+            }
         }
 
         /*
