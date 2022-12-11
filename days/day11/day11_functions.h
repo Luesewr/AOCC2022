@@ -25,27 +25,15 @@ typedef struct LongMonkey {
     int false_index;
 } LongMonkey;
 
-typedef struct IntFunction {
-    funcType type1;
-    int data1;
-    int operator;
-    funcType type2;
-    int data2;
-} IntFunction;
-
-typedef struct IntMonkey {
-    PointerList *items;
-    IntFunction *function;
-    int divisible_by;
-    int true_index;
-    int false_index;
-} IntMonkey;
+long long parse_input(PointerList *monkeys);
 
 void add_long(PointerList *pointerList, long long value);
 
 void set_long(PointerList *pointerList, int index, long long value);
 
 long long get_long(PointerList *pointerList, int index);
+
+void print_long(PointerList *pointerList);
 
 void swap_long(long *a, long *b);
 
@@ -56,8 +44,6 @@ void dual_pivot_quick_sort_long(long ** arr, int low, int high, long (*comparato
 void sort_long_with_comparator(PointerList *pointerList, long (*comparator)(long, long));
 
 long reverseLongComparator(long i, long j);
-
-int reverseIntComparator(int i, int j);
 
 int findEnd(const char * array);
 

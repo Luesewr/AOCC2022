@@ -1,6 +1,122 @@
 #include "../../library/pointerList.h"
 #include "day11_functions.h"
+#include <stdio.h>
 #include <stdlib.h>
+
+long long parse_input(PointerList *monkeys) {
+    /*
+     * Setting up the input file.
+     */
+
+    FILE *file;
+
+    file = fopen("../days/day11/input_day11.txt", "r");
+
+    /*
+     * Shutdown program if the file can't be found or another error occurred.
+     */
+
+    if (file == NULL) {
+        exit(1);
+    }
+
+    /*
+     * Set up a line variable which will store the line that was read from the file.
+     * Make variables:
+     *  containsCount, to keep track of how many ranges one range fully overlapped another.
+     *  inputs, to store the integers that were on the line.
+     *  ptr, to keep track of which part of the input line were parsing.
+     *
+     * Then loop over all lines.
+     */
+
+    char line[55];
+
+    long long total_divider = 1;
+
+    while (fgets(line, 55, file) != NULL) {
+        LongMonkey *monkey = malloc(sizeof(LongMonkey));
+
+        /*
+         * Parse starting items.
+         */
+        fgets(line, 55, file);
+        char *ptr = line + 18;
+        int itemAmount = (findEnd(ptr) + 2) / 4;
+
+        monkey->items = initialize_pointerlist();
+
+        for (int i = 0; i < itemAmount; i++) {
+            add_long(monkey->items, strtol(ptr, &ptr, 10));
+            ptr += 2;
+        }
+
+        /*
+         * Parse function.
+         */
+        fgets(line, 55, file);
+        LongFunction *function = malloc(sizeof(LongFunction));
+        ptr = line + 19;
+
+        if (ptr[0] == 'o') {
+            function->type1 = VARIABLE;
+            function->data1 = 0;
+            ptr += 4;
+        } else {
+            function->type1 = NUMBER;
+            function->data1 = strtol(ptr, &ptr, 10);
+            ptr += 1;
+        }
+
+        function->operator = ptr[0] == '*';
+        ptr += 2;
+
+        if (ptr[0] == 'o') {
+            function->type2 = VARIABLE;
+            function->data2 = 0;
+        } else {
+            function->type2 = NUMBER;
+            function->data2 = strtol(ptr, &ptr, 10);
+        }
+
+        monkey->function = function;
+
+        /*
+         * Parse test line.
+         */
+        fgets(line, 55, file);
+        ptr = line + 21;
+
+        monkey->divisible_by = strtol(ptr, &ptr, 10);
+        if (total_divider % monkey->divisible_by != 0) {
+            total_divider *= monkey->divisible_by;
+        }
+
+        /*
+         * Parse the true value line.
+         */
+        fgets(line, 55, file);
+        ptr = line + 29;
+
+        monkey->true_index = strtol(ptr, &ptr, 10);
+
+        /*
+         * Parse the false value line.
+         */
+        fgets(line, 55, file);
+        ptr = line + 30;
+
+        monkey->false_index = strtol(ptr, &ptr, 10);
+
+        fgets(line, 55, file);
+
+        add_pointer(monkeys, monkey);
+    }
+
+    fclose(file);
+
+    return total_divider;
+}
 
 void add_long(PointerList *pointerList, long long value) {
     long long *pointer = malloc(sizeof(long long) + 1);
@@ -14,6 +130,13 @@ void set_long(PointerList *pointerList, int index, long long value) {
 
 long long get_long(PointerList *pointerList, int index) {
     return *(long long *) get_pointer(pointerList, index);
+}
+
+void print_long(PointerList *pointerList) {
+    for (int i = 0; i < pointerList->size; i++) {
+        printf("%lld ", get_long(pointerList, i));
+    }
+    printf("\n");
 }
 
 void swap_long(long *a, long *b) {
@@ -83,10 +206,6 @@ void sort_long_with_comparator(PointerList *pointerList, long (*comparator)(long
 }
 
 long reverseLongComparator(long i, long j) {
-    return j - i;
-}
-
-int reverseIntComparator(int i, int j) {
     return j - i;
 }
 
