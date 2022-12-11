@@ -3,6 +3,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/**
+ * Parses the input file into a list of monkeys.
+ * @param monkeys   A list of monkeys.
+ * @return  The smallest common denominator of the test in each monkey.
+ */
 long long parse_input(PointerList *monkeys) {
     /*
      * Setting up the input file.
@@ -15,27 +20,26 @@ long long parse_input(PointerList *monkeys) {
     /*
      * Shutdown program if the file can't be found or another error occurred.
      */
-
     if (file == NULL) {
         exit(1);
     }
 
     /*
-     * Set up a line variable which will store the line that was read from the file.
      * Make variables:
-     *  containsCount, to keep track of how many ranges one range fully overlapped another.
-     *  inputs, to store the integers that were on the line.
-     *  ptr, to keep track of which part of the input line were parsing.
-     *
-     * Then loop over all lines.
+     *  line, which will store the line that was read from the file.
+     *  total_divider, which will keep track of the smallest common denominator.
      */
-
     char line[55];
-
     long long total_divider = 1;
 
+    /*
+     * Loop over the input file.
+     */
     while (fgets(line, 55, file) != NULL) {
-        LongMonkey *monkey = malloc(sizeof(LongMonkey));
+        /*
+         * Create a monkey.
+         */
+        Monkey *monkey = malloc(sizeof(Monkey));
 
         /*
          * Parse starting items.
@@ -55,7 +59,7 @@ long long parse_input(PointerList *monkeys) {
          * Parse function.
          */
         fgets(line, 55, file);
-        LongFunction *function = malloc(sizeof(LongFunction));
+        Function *function = malloc(sizeof(Function));
         ptr = line + 19;
 
         if (ptr[0] == 'o') {
@@ -93,7 +97,7 @@ long long parse_input(PointerList *monkeys) {
         }
 
         /*
-         * Parse the true value line.
+         * Parse the true monkey index line.
          */
         fgets(line, 55, file);
         ptr = line + 29;
@@ -101,22 +105,45 @@ long long parse_input(PointerList *monkeys) {
         monkey->true_index = strtol(ptr, &ptr, 10);
 
         /*
-         * Parse the false value line.
+         * Parse the false monkey index line.
          */
         fgets(line, 55, file);
         ptr = line + 30;
 
         monkey->false_index = strtol(ptr, &ptr, 10);
 
+        /*
+         * Skip the empty line and add the created monkey to the list.
+         */
         fgets(line, 55, file);
 
         add_pointer(monkeys, monkey);
     }
 
+    /*
+     * Close the file reader and return the smallest common denominator.
+     */
     fclose(file);
 
     return total_divider;
 }
+
+/**
+ * Loops in a string to find the size of the string before it reaches a newline character.
+ * @param array The character array (string) with a newline character.
+ * @return the size of the string before it reached a newline character.
+ */
+int findEnd(const char * array) {
+    int i = 0;
+    do {
+        i++;
+    } while (array[i] != '\n');
+    return i;
+}
+
+/*
+ * Some int list functions translated for the long long-type, because we are dealing with very large numbers.
+ */
 
 void add_long(PointerList *pointerList, long long value) {
     long long *pointer = malloc(sizeof(long long) + 1);
@@ -207,17 +234,4 @@ void sort_long_with_comparator(PointerList *pointerList, long (*comparator)(long
 
 long reverseLongComparator(long i, long j) {
     return j - i;
-}
-
-/**
- * Loops in a string to find the size of the string before it reaches a newline character.
- * @param array The character array (string) with a newline character.
- * @return the size of the string before it reached a newline character.
- */
-int findEnd(const char * array) {
-    int i = 0;
-    do {
-        i++;
-    } while (array[i] != '\n');
-    return i;
 }

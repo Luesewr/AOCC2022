@@ -9,21 +9,21 @@
 
 typedef enum funcType{VARIABLE, NUMBER} funcType;
 
-typedef struct LongFunction {
+typedef struct Function {
     funcType type1;
     long long data1;
     int operator;
     funcType type2;
     long long data2;
-} LongFunction;
+} Function;
 
-typedef struct LongMonkey {
+typedef struct Monkey {
     PointerList *items;
-    LongFunction *function;
+    Function *function;
     int divisible_by;
     int true_index;
     int false_index;
-} LongMonkey;
+} Monkey;
 
 long long parse_input(PointerList *monkeys);
 
