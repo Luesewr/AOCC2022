@@ -21,11 +21,14 @@ set(PROJECT_HEADERS
 #        days/day7/day7_2.h
 #        days/day8/day8_1.h
 #        days/day8/day8_2.h
-        days/day9/day9_functions.h
+#        days/day9/day9_functions.h
 #        days/day9/day9_1.h
-        days/day9/day9_2.h
+#        days/day9/day9_2.h
 #        days/day10/day10_1.h
 #        days/day10/day10_2.h
+        days/day11/day11_functions.h
+#        days/day11/day11_1.h
+        days/day11/day11_2.h
         library/pointerList.h library/intList.h)
 
 set(PROJECT_SOURCES
@@ -46,11 +49,14 @@ set(PROJECT_SOURCES
 #        days/day7/day7_2.c
 #        days/day8/day8_1.c
 #        days/day8/day8_2.c
-        days/day9/day9_functions.c
+#        days/day9/day9_functions.c
 #        days/day9/day9_1.c
-        days/day9/day9_2.c
+#        days/day9/day9_2.c
 #        days/day10/day10_1.c
 #        days/day10/day10_2.c
+        days/day11/day11_functions.c
+#        days/day11/day11_1.c
+        days/day11/day11_2.c
         library/pointerList.c library/intList.c)
 
 add_executable(main ${PROJECT_SOURCES} ${PROJECT_HEADERS})

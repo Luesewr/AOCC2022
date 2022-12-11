@@ -132,12 +132,13 @@ int main() {
     }
 
     /*
-     * Print the size of the set (the result) and delete the set and the chain.
+     * Print the size of the set (the result), delete the set and the chain and close the file reader.
      */
     printf("%d\n", points->size);
 
     delete_pointerlist(chain);
     delete_point_set(points);
+    fclose(file);
 
     /*
      * Close the timer and print the taken time.

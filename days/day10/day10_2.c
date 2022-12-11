@@ -104,9 +104,10 @@ int main() {
     }
 
     /*
-     * Deallocate the screen.
+     * Deallocate the screen and close the file reader.
      */
     free(screen);
+    fclose(file);
 
     /*
      * Close the timer and print the taken time.

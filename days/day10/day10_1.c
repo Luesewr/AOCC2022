@@ -84,10 +84,12 @@ int main() {
     }
 
     /*
-     * Print the total score.
+     * Print the total score and close the file reader.
      */
 
     printf("%d\n", total);
+
+    fclose(file);
 
 
     /*
