@@ -123,7 +123,7 @@ void concat(PointerList *pointerlist1, PointerList *pointerlist2) {
 }
 
 void * get_pointer(PointerList *pointerlist, int index) {
-    if (index < 0 || index >= pointerlist->size) {
+    if (pointerlist == NULL || index < 0 || index >= pointerlist->size) {
         return NULL;
     }
     return pointerlist->pointers[index];
