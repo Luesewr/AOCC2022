@@ -15,7 +15,12 @@ void add_int_at(PointerList *pointerList, int index, int value) {
 }
 
 int get_int(PointerList *pointerList, int index) {
-    return *(int *) get_pointer(pointerList, index);
+    int *gotten = get_pointer(pointerList, index);
+    if (gotten != NULL) {
+        return *gotten;
+    } else {
+        return -1;
+    }
 }
 
 int get_last_int(PointerList *pointerList) {

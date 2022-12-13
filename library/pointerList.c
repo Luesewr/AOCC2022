@@ -179,20 +179,68 @@ int contains(PointerList *pointerlist, void * value) {
     return index_of(pointerlist, value) != -1;
 }
 
-//PointerList *indices_of(PointerList *pointerlist, void * value) {
-//    PointerList *result = initialize_pointerlist();
-//    for (int i = 0; i < pointerlist->size; i++) {
-//        if (pointerlist->pointers[i] == value) {
-//            add_pointer(result, i);
-//        }
-//    }
-//    return result;
-//}
+void swap_pointers(void ** arr, int i, int j) {
+    void *temp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = temp;
+}
 
-//PointerList *int_values_at(PointerList *pointerlist, PointerList *indices) {
-//    PointerList *result = initialize_pointerlist_of_capacity(indices->size);
-//    for (int i = 0; i < indices->size; i++) {
-//        add_pointer(result, pointerlist->pointers[indices->pointers[i]]);
-//    }
-//    return result;
-//}
+int partition_pointers(void ** arr, int low, int high, int *lp, int (*comparator)(void *, void *)) {
+    if (comparator(arr[high], arr[low]) < 0) {
+        swap_pointers(arr, low, high);
+    }
+    // p is the left pivot, and q is the right pivot.
+    int j = low + 1;
+    int g = high - 1, k = low + 1;
+    void *p = arr[low], *q = arr[high];
+    while (k <= g) {
+
+        // if pointers are less than the left pivot
+        if (comparator(arr[k], p) < 0) {
+            swap_pointers(arr, k, j);
+            j++;
+        }
+
+            // if pointers are greater than or equal
+            // to the right pivot
+        else if (comparator(q, arr[k]) <= 0) {
+            while (comparator(q, arr[g]) < 0 && k < g) {
+                g--;
+            }
+            swap_pointers(arr, k, g);
+            g--;
+            if (comparator(arr[k], p) < 0) {
+                swap_pointers(arr, k, j);
+                j++;
+            }
+        }
+        k++;
+    }
+    j--;
+    g++;
+
+    // bring pivots to their appropriate positions.
+    swap_pointers(arr, low, j);
+    swap_pointers(arr, high, g);
+
+    // returning the indices of the pivots.
+    *lp = j; // because we cannot return two pointers
+    // from a function.
+
+    return g;
+}
+
+void dual_pivot_quick_sort_pointers(void ** arr, int low, int high, int (*comparator)(void *, void *)) {
+    if (low < high) {
+        // lp means left pivot, and rp means right pivot.
+        int lp, rp;
+        rp = partition_pointers(arr, low, high, &lp, comparator);
+        dual_pivot_quick_sort_pointers(arr, low, lp - 1, comparator);
+        dual_pivot_quick_sort_pointers(arr, lp + 1, rp - 1, comparator);
+        dual_pivot_quick_sort_pointers(arr, rp + 1, high, comparator);
+    }
+}
+
+void sort_pointers_with_comparator(PointerList *pointerList, int (*comparator)(void *, void *)) {
+    dual_pivot_quick_sort_pointers((void **)pointerList->pointers, 0, pointerList->size - 1, comparator);
+}

@@ -45,9 +45,13 @@ int index_of(PointerList *pointerlist, void * value);
 
 int contains(PointerList *pointerlist, void * value);
 
-PointerList *indices_of(PointerList *pointerlist, void * value);
+void swap_pointers(void ** arr, int i, int j);
 
-PointerList *values_at(PointerList *pointerlist, PointerList *indices);
+int partition_pointers(void ** arr, int low, int high, int *lp, int (*comparator)(void *, void *));
+
+void dual_pivot_quick_sort_pointers(void ** arr, int low, int high, int (*comparator)(void *, void *));
+
+void sort_pointers_with_comparator(PointerList *pointerList, int (*comparator)(void *, void *));
 
 #endif //LIST_POINTERLIST_H
 
