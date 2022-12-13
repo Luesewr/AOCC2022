@@ -81,6 +81,11 @@ int delete_pointerlist_not_pointers(PointerList *pointerlist) {
     return 0;
 }
 
+int delete_pointers_not_list(PointerList *list) {
+    free(list->pointers);
+    return 0;
+}
+
 void add_pointer(PointerList *pointerlist, void * pointer) {
     if (pointerlist->capacity == pointerlist->size) {
         expand_to_capacity(pointerlist, pointerlist->capacity * 2);
