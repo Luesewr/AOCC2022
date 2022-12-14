@@ -11,4 +11,6 @@ PointerList *parseInput();
 
 int packetComparator(void *one, void *two);
 
+void deletePackets(PointerList *packets);
+
 #endif //POINTERLIST_DAY13_FUNCTIONS_H

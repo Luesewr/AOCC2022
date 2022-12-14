@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <time.h>
+#include <stdlib.h>
 #include "../../library/pointerList.h"
 #include "../../library/intList.h"
 #include "day13_functions.h"
@@ -38,6 +38,9 @@ int main() {
     }
 
     printf("%d\n", indicesSum);
+
+    deletePackets(packets);
+    delete_pointerlist_not_pointers(packets);
 
     /*
      * Close the timer and print the taken time.

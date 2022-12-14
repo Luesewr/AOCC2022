@@ -37,6 +37,9 @@ int main() {
 
     printf("%d\n", decoder_key);
 
+    deletePackets(packets);
+    delete_pointerlist_not_pointers(packets);
+
     /*
      * Close the timer and print the taken time.
      */

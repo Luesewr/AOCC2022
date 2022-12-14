@@ -152,3 +152,15 @@ int packetComparator(void *one, void *two) {
     }
     return 0;
 }
+
+void deletePackets(PointerList *packets) {
+    for (int i = 0; i < packets->size; i++) {
+        if (isPointerList(packets, i)) {
+            PointerList *current_list = get_pointer(packets, i);
+            deletePackets(current_list);
+            delete_pointerlist_not_pointers(current_list);
+        } else {
+            free(get_pointer(packets, i));
+        }
+    }
+}
