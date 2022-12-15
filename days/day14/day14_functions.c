@@ -144,7 +144,7 @@ pointSet *create_point_set(int buckets_amount) {
  * @return the hashcode of the location.
  */
 int pointHashCode(int x, int y) {
-    return abs(x * y);
+    return abs(x) * 200 + abs(y);
 }
 
 /**
