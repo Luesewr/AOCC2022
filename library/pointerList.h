@@ -41,6 +41,8 @@ void print_pointers_in_capacity(PointerList *pointerlist);
 
 void * remove_at(PointerList *pointerlist, int index);
 
+PointerList *remove_pointer_if(PointerList *pointerList, int (*predicateFunction)(void *));
+
 int index_of(PointerList *pointerlist, void * value);
 
 int contains(PointerList *pointerlist, void * value);

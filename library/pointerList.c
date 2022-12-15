@@ -171,6 +171,28 @@ void * remove_at(PointerList *pointerlist, int index) {
     return result;
 }
 
+PointerList *remove_pointer_if(PointerList *pointerList, int (*predicateFunction)(void *)) {
+    PointerList *removedPointerList = initialize_pointerlist();
+    int offset = 0;
+    for (int i = 0; i < pointerList->size; i++) {
+        void *value = get_pointer(pointerList, i);
+        if (predicateFunction(value)) {
+            add_pointer(removedPointerList, value);
+            offset++;
+        } else {
+            pointerList->pointers[i - offset] = pointerList->pointers[i];
+        }
+    }
+    for (int i = pointerList->size - offset; i < pointerList->size; i++) {
+        pointerList->pointers[i] = NULL;
+    }
+    pointerList->size -= offset;
+
+    shrink_to_capacity(pointerList, pointerList->size);
+
+    return removedPointerList;
+}
+
 int index_of(PointerList *pointerlist, void * value) {
     for (int i = 0; i < pointerlist->size; i++) {
         if (pointerlist->pointers[i] == value) {
