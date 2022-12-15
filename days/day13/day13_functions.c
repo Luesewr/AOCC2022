@@ -126,10 +126,10 @@ int packetComparator(void *one, void *two) {
                 add_int(wrapper, get_int(cur_one, index));
                 result = packetComparator(wrapper, get_pointer(cur_two, index));
             }
+            delete_pointerlist(wrapper);
             if (result != 0) {
                 return result;
             }
-            delete_pointerlist(wrapper);
             index++;
         } else if (!is_one_list && !is_two_list) {
             int cur_one_int = get_int(cur_one, index);
