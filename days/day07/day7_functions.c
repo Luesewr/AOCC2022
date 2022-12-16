@@ -96,7 +96,7 @@ void parse_input(fs_element *root, PointerList *directories, PointerList *files)
 
     FILE *file;
 
-    file = fopen("../days/day7/input_day7.txt", "r");
+    file = fopen("../days/day07/input_day7.txt", "r");
 
     /*
      * Shutdown program if the file can't be found or another error occurred.

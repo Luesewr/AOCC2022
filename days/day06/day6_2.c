@@ -22,7 +22,7 @@ int main() {
 
     FILE *file;
 
-    file = fopen("../days/day6/input_day6.txt", "r");
+    file = fopen("../days/day06/input_day6.txt", "r");
 
     /*
      * Shutdown program if the file can't be found or another error occurred.
