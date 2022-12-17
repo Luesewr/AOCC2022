@@ -5,7 +5,7 @@
 #include "../../library/pointerList.h"
 #include "../../library/intList.h"
 
-#define SECONDS 30
+#define MINUTES 30
 
 typedef struct Node {
     int flow_rate;
@@ -21,7 +21,7 @@ typedef struct NodeQueueElement {
 typedef struct QueueElement {
     int node_id;
     int total;
-    int seconds_left;
+    int minutes_left;
     int *visited_nodes;
     struct QueueElement *next;
 } QueueElement;
@@ -186,7 +186,7 @@ int main() {
 
     QueueElement *head = malloc(sizeof(QueueElement));
     head->node_id = start_index;
-    head->seconds_left = SECONDS + 1;
+    head->minutes_left = MINUTES + 1;
     head->total = 0;
     head->next = NULL;
     head->visited_nodes = malloc(sizeof(int) * nodes->size);
@@ -205,20 +205,20 @@ int main() {
 
     while (head != NULL) {
         QueueElement *current_element = head;
-        current_element->seconds_left--;
+        current_element->minutes_left--;
         int *current_visited = current_element->visited_nodes;
         Node *current_node = get_pointer(nodes, current_element->node_id);
-        current_element->total += current_node->flow_rate * current_element->seconds_left;
+        current_element->total += current_node->flow_rate * current_element->minutes_left;
         int could_add = 0;
         for (int i = 0; i < nodes->size; i++) {
             int distance = distances[current_element->node_id][i];
-            if (current_visited[i] == 0 && current_element->seconds_left - distance - 1 >= 0) {
+            if (current_visited[i] == 0 && current_element->minutes_left - distance - 1 >= 0) {
                 could_add = 1;
-                QueueElement *new_element = malloc(sizeof(QueueElement) + 1);
+                QueueElement *new_element = malloc(sizeof(QueueElement));
                 new_element->visited_nodes = malloc(sizeof(int) * nodes->size);
                 copy_into_array(current_element->visited_nodes, new_element->visited_nodes, nodes->size);
                 new_element->visited_nodes[i] = 1;
-                new_element->seconds_left = current_element->seconds_left - distance;
+                new_element->minutes_left = current_element->minutes_left - distance;
                 new_element->node_id = i;
                 new_element->total = current_element->total;
                 new_element->next = NULL;
@@ -245,6 +245,7 @@ int main() {
 
     free(distances);
 
+    fclose(file);
 
     delete_pointerlist(nodes);
 

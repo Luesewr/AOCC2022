@@ -72,6 +72,8 @@ PointerList *parseInput() {
         delete_pointerlist_not_pointers(back_track);
     }
 
+    fclose(file);
+
     return packets;
 }
 

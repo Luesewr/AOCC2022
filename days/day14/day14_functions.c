@@ -105,6 +105,8 @@ int parse_input(pointSet *set) {
         }
     }
 
+    fclose(file);
+
     return highestY;
 }
 

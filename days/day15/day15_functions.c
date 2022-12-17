@@ -38,6 +38,8 @@ void parse_input(PointerList *sensors) {
 
         add_pointer(sensors, create_sensor(create_point(sensor_x, sensor_y), create_point(beacon_x, beacon_y)));
     }
+
+    fclose(file);
 }
 
 /**
