@@ -1,7 +1,8 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 #include <string.h>
+#include <time.h>
 #include "../../library/pointerList.h"
 #include "../../library/intList.h"
 
@@ -26,7 +27,7 @@ typedef struct QueueElement {
     int total;
     int elephant_minutes_left;
     int minutes_left;
-    int *visited_nodes;
+    int64_t visited_nodes;
     ElementFocus type;
     struct QueueElement *next;
 } QueueElement;
@@ -37,14 +38,18 @@ void reset_visited(int array[], int size) {
     }
 }
 
-void copy_into_array(const int *source, int *dest, int size) {
-    for (int i = 0; i < size; i++) {
-        dest[i] = source[i];
-    }
+int bitAt(int64_t list, int index) {
+    int64_t mask = 1;
+    return (int) ((list >> index) & mask);
+}
+
+int64_t setBitOneAt(int64_t list, int index) {
+    int64_t mask = 1;
+    return list | (mask << index);
 }
 
 /*
- * Day 16, Part 1
+ * Day 16, Part 2
  */
 int main() {
 
@@ -197,13 +202,12 @@ int main() {
     head->total = 0;
     head->next = NULL;
     head->type = PLAYER;
-    head->visited_nodes = malloc(sizeof(int) * nodes->size);
+    head->visited_nodes = 0;
 
     for (int i = 0; i < nodes->size; i++) {
         if (((Node *) get_pointer(nodes, i))->flow_rate == 0) {
-            head->visited_nodes[i] = 1;
-        } else {
-            head->visited_nodes[i] = 0;
+            int64_t mask = 1;
+            head->visited_nodes |= mask << i;
         }
     }
 
@@ -213,7 +217,7 @@ int main() {
 
     while (head != NULL) {
         QueueElement *current_element = head;
-        int *current_visited = current_element->visited_nodes;
+        int64_t current_visited = current_element->visited_nodes;
         if (current_element->type == PLAYER) {
             current_element->minutes_left--;
             Node *current_node = get_pointer(nodes, current_element->node_id);
@@ -228,12 +232,10 @@ int main() {
             if (current_element->minutes_left > current_element->elephant_minutes_left) {
                 int distance = distances[current_element->node_id][i];
                 int new_minutes = current_element->minutes_left - distance;
-                if (current_visited[i] == 0 && new_minutes - 1 >= 0) {
+                if (bitAt(current_visited, i) == 0 && new_minutes - 1 >= 0) {
                     could_add = 1;
                     QueueElement *new_element = malloc(sizeof(QueueElement));
-                    new_element->visited_nodes = malloc(sizeof(int) * nodes->size);
-                    copy_into_array(current_element->visited_nodes, new_element->visited_nodes, nodes->size);
-                    new_element->visited_nodes[i] = 1;
+                    new_element->visited_nodes = setBitOneAt(current_visited, i);
                     new_element->minutes_left = new_minutes;
                     new_element->elephant_minutes_left = current_element->elephant_minutes_left;
                     new_element->elephant_node_id = current_element->elephant_node_id;
@@ -249,12 +251,10 @@ int main() {
             if (current_element->minutes_left <= current_element->elephant_minutes_left) {
                 int distance = distances[current_element->elephant_node_id][i];
                 int new_minutes = current_element->elephant_minutes_left - distance;
-                if (current_visited[i] == 0 && new_minutes - 1 >= 0) {
+                if (bitAt(current_visited, i) == 0 && new_minutes - 1 >= 0) {
                     could_add = 1;
                     QueueElement *new_element = malloc(sizeof(QueueElement));
-                    new_element->visited_nodes = malloc(sizeof(int) * nodes->size);
-                    copy_into_array(current_element->visited_nodes, new_element->visited_nodes, nodes->size);
-                    new_element->visited_nodes[i] = 1;
+                    new_element->visited_nodes = setBitOneAt(current_visited, i);
                     new_element->elephant_minutes_left = new_minutes;
                     new_element->elephant_node_id = i;
                     new_element->type = ELEPHANT;
@@ -269,12 +269,10 @@ int main() {
             }
         }
         if (!could_add && current_element->total > maximum_pressure) {
-            printf("%d\n", current_element->total);
             maximum_pressure = current_element->total;
         }
 
         head = head->next;
-        free(current_element->visited_nodes);
         free(current_element);
     }
 

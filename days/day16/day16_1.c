@@ -1,7 +1,8 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 #include <string.h>
+#include <time.h>
 #include "../../library/pointerList.h"
 #include "../../library/intList.h"
 
@@ -22,7 +23,7 @@ typedef struct QueueElement {
     int node_id;
     int total;
     int minutes_left;
-    int *visited_nodes;
+    int64_t visited_nodes;
     struct QueueElement *next;
 } QueueElement;
 
@@ -31,11 +32,14 @@ void reset_visited(int array[], int size) {
         array[i] = 0;
     }
 }
+int bitAt(int64_t list, int index) {
+    int64_t mask = 1;
+    return (int) ((list >> index) & mask);
+}
 
-void copy_into_array(const int *source, int *dest, int size) {
-    for (int i = 0; i < size; i++) {
-        dest[i] = source[i];
-    }
+int64_t setBitOneAt(int64_t list, int index) {
+    int64_t mask = 1;
+    return list | (mask << index);
 }
 
 /*
@@ -116,8 +120,10 @@ int main() {
 
         add_pointer(outgoing_edge_names, outgoing_edges);
     }
+    
+    int nodes_size = nodes->size;
 
-    for (int i = 0; i < nodes->size; i++) {
+    for (int i = 0; i < nodes_size; i++) {
         Node *current_node = get_pointer(nodes, i);
 
         PointerList *current_names = get_pointer(outgoing_edge_names, i);
@@ -144,13 +150,13 @@ int main() {
 
     delete_pointerlist(names);
 
-    int ** distances = malloc(sizeof(int *) * nodes->size);
+    int ** distances = malloc(sizeof(int *) * nodes_size);
 
-    for (int i = 0; i < nodes->size; i++) {
-        distances[i] = malloc(sizeof(int) * nodes->size);
+    for (int i = 0; i < nodes_size; i++) {
+        distances[i] = malloc(sizeof(int) * nodes_size);
 
-        int visited[nodes->size];
-        reset_visited(visited, nodes->size);
+        int visited[nodes_size];
+        reset_visited(visited, nodes_size);
         visited[i] = 1;
 
         NodeQueueElement *head = malloc(sizeof(NodeQueueElement));
@@ -189,13 +195,12 @@ int main() {
     head->minutes_left = MINUTES + 1;
     head->total = 0;
     head->next = NULL;
-    head->visited_nodes = malloc(sizeof(int) * nodes->size);
+    head->visited_nodes = 0;
 
-    for (int i = 0; i < nodes->size; i++) {
+    for (int i = 0; i < nodes_size; i++) {
         if (((Node *) get_pointer(nodes, i))->flow_rate == 0) {
-            head->visited_nodes[i] = 1;
-        } else {
-            head->visited_nodes[i] = 0;
+            int64_t mask = 1;
+            head->visited_nodes |= mask << i;
         }
     }
 
@@ -206,18 +211,16 @@ int main() {
     while (head != NULL) {
         QueueElement *current_element = head;
         current_element->minutes_left--;
-        int *current_visited = current_element->visited_nodes;
+        int64_t current_visited = current_element->visited_nodes;
         Node *current_node = get_pointer(nodes, current_element->node_id);
         current_element->total += current_node->flow_rate * current_element->minutes_left;
         int could_add = 0;
-        for (int i = 0; i < nodes->size; i++) {
+        for (int i = 0; i < nodes_size; i++) {
             int distance = distances[current_element->node_id][i];
-            if (current_visited[i] == 0 && current_element->minutes_left - distance - 1 >= 0) {
+            if (bitAt(current_visited, i) == 0 && current_element->minutes_left - distance - 1 >= 0) {
                 could_add = 1;
                 QueueElement *new_element = malloc(sizeof(QueueElement));
-                new_element->visited_nodes = malloc(sizeof(int) * nodes->size);
-                copy_into_array(current_element->visited_nodes, new_element->visited_nodes, nodes->size);
-                new_element->visited_nodes[i] = 1;
+                new_element->visited_nodes = setBitOneAt(current_visited, i);
                 new_element->minutes_left = current_element->minutes_left - distance;
                 new_element->node_id = i;
                 new_element->total = current_element->total;
@@ -232,13 +235,12 @@ int main() {
         }
 
         head = head->next;
-        free(current_element->visited_nodes);
         free(current_element);
     }
 
     printf("%d\n", maximum_pressure);
 
-    for (int i = 0; i < nodes->size; i++) {
+    for (int i = 0; i < nodes_size; i++) {
         delete_pointerlist(((Node *) get_pointer(nodes, i))->edges);
         free(distances[i]);
     }
