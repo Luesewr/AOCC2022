@@ -21,33 +21,6 @@ int64_t setBitOneAt(int64_t list, int index) {
     return list | (mask << index);
 }
 
-QueueElement *create_queue_element(int node_id, int total, int minutes_left, int64_t visited_nodes) {
-    QueueElement *new_element = malloc(sizeof(QueueElement));
-
-    new_element->node_id = node_id;
-    new_element->minutes_left = minutes_left;
-    new_element->total = total;
-    new_element->next = NULL;
-    new_element->visited_nodes = visited_nodes;
-
-    return new_element;
-}
-
-ElephantQueueElement *create_elephant_queue_element(int node_id, int elephant_node_id, int total, int elephant_minutes_left, int minutes_left, int64_t visited_nodes, ElementFocus type) {
-    ElephantQueueElement *new_element = malloc(sizeof(ElephantQueueElement));
-
-    new_element->node_id = node_id;
-    new_element->elephant_node_id = elephant_node_id;
-    new_element->minutes_left = minutes_left;
-    new_element->elephant_minutes_left = elephant_minutes_left;
-    new_element->total = total;
-    new_element->next = NULL;
-    new_element->type = type;
-    new_element->visited_nodes = visited_nodes;
-
-    return new_element;
-}
-
 int parse_input(PointerList *names, PointerList *nodes, PointerList *edge_names) {
     /*
      * Setting up the input file.

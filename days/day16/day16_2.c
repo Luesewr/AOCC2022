@@ -20,24 +20,44 @@ int main() {
     struct timespec start, end;
     clock_gettime(CLOCK_REALTIME, &start);
 
+    /*
+     * Create lists to store the graph information.
+     */
     PointerList *names = initialize_pointerlist();
     PointerList *nodes = initialize_pointerlist();
     PointerList *edge_names = initialize_pointerlist();
 
+    /*
+     * Parse the input into the lists and get the starting index.
+     */
     int start_index = parse_input(names, nodes, edge_names);
 
+    /*
+     * Link the edges of each node to the right index in the nodes list.
+     */
     link_outgoing_edges(names, nodes, edge_names);
 
+    /*
+     * Calculate the minimum distance to get to each node from each node.
+     */
     int ** distances = calculate_minimum_distances(nodes);
-    
-    
+
+    /*
+     * Store the amount of nodes, because it is used a lot.
+     */
     int nodes_size = nodes->size;
 
+    /*
+     * Create the head and tail of the queue, both starting at the starting index with 26 minutes left.
+     */
     ElephantQueueElement *head = malloc(sizeof(ElephantQueueElement));
     ElephantQueueElement head_values = {start_index, start_index, 0, MINUTES, MINUTES, 0, PLAYER, NULL};
     *head = head_values;
     ElephantQueueElement *tail = head;
 
+    /*
+     * Set the nodes with a flow rate of 0 to be visited already.
+     */
     for (int i = 0; i < nodes_size; i++) {
         if (((Valve *) get_pointer(nodes, i))->flow_rate == 0) {
             int64_t mask = 1;
@@ -45,12 +65,26 @@ int main() {
         }
     }
 
+    /*
+     * Create a variable to keep track of the maximum pressure.
+     */
     int maximum_pressure = 0;
 
+    /*
+     * Loop as long as the queue is not empty.
+     */
     while (head != NULL) {
+
+        /*
+         * Get the current element in the queue, its corresponding visited nodes and the current node.
+         */
         ElephantQueueElement *current_element = head;
         int64_t current_visited = current_element->visited_nodes;
 
+        /*
+         * Update the total of the current element in the queue according to whether this is currently
+         * the elephant or the person visiting.
+         */
         if (current_element->type == PLAYER) {
             Valve *current_node = get_pointer(nodes, current_element->node_id);
             current_element->total += current_node->flow_rate * current_element->minutes_left;
@@ -59,12 +93,34 @@ int main() {
             current_element->total += current_elephant_node->flow_rate * current_element->elephant_minutes_left;
         }
 
+        /*
+         * Add variable to check if this is the end of this possible order of nodes.
+         */
         int could_add = 0;
-        for (int i = 0; i < nodes_size; i++) {
-            if (current_element->minutes_left > current_element->elephant_minutes_left) {
-                int new_minutes = current_element->minutes_left - distances[current_element->node_id][i] - 1;
-                if (!bitAt(current_visited, i) && new_minutes >= 0) {
+
+        /*
+         * Check if it's the elephant's or the person's turn.
+         */
+        if (current_element->minutes_left > current_element->elephant_minutes_left) {
+            /*
+             * Go through all the nodes.
+             */
+            for (int i = 0; i < nodes_size; i++) {
+
+                /*
+                 * Check if this node is already visited and if the time that it would give it
+                 * would still have 0 or more minutes remaining.
+                 */
+                int new_minutes;
+
+                if (    (!bitAt(current_visited, i)) &&
+                        (new_minutes  = current_element->minutes_left - distances[current_element->node_id][i] - 1) &&
+                        (new_minutes >= 0)) {
+                    /*
+                     * Mark that there was a new node available and add that node to the queue with the new calculated remaining time.
+                     */
                     could_add = 1;
+
                     ElephantQueueElement *new_element = malloc(sizeof(ElephantQueueElement));
                     ElephantQueueElement new_element_values = {i,
                                                                current_element->elephant_node_id,
@@ -75,34 +131,59 @@ int main() {
                                                                PLAYER,
                                                                NULL};
                     *new_element = new_element_values;
+
                     tail->next = new_element;
                     tail = tail->next;
                 }
             }
-            if (current_element->minutes_left <= current_element->elephant_minutes_left) {
-                int new_minutes = current_element->elephant_minutes_left - distances[current_element->elephant_node_id][i] - 1;
-                if (!bitAt(current_visited, i) && new_minutes >= 0) {
+        } else {
+            /*
+             * Go through all the nodes.
+             */
+            for (int i = 0; i < nodes_size; i++) {
+
+                /*
+                 * Check if this node is already visited and if the time that it would give it
+                 * would still have 0 or more minutes remaining.
+                 */
+                int new_minutes;
+
+                if (    (!bitAt(current_visited, i)) &&
+                        (new_minutes = current_element->elephant_minutes_left - distances[current_element->elephant_node_id][i] - 1) &&
+                        (new_minutes >= 0)) {
+                    /*
+                     * Mark that there was a new node available and add that node to the queue with the new calculated remaining time.
+                     */
                     could_add = 1;
+
                     ElephantQueueElement *new_element = malloc(sizeof(ElephantQueueElement));
                     ElephantQueueElement new_element_values = {current_element->node_id,
-                            i,
-                            current_element->total,
-                            new_minutes,
-                            current_element->minutes_left,
-                            setBitOneAt(current_visited, i),
-                            ELEPHANT,
-                            NULL};
+                                                               i,
+                                                               current_element->total,
+                                                               new_minutes,
+                                                               current_element->minutes_left,
+                                                               setBitOneAt(current_visited, i),
+                                                               ELEPHANT,
+                                                               NULL};
                     *new_element = new_element_values;
+
                     tail->next = new_element;
                     tail = tail->next;
                 }
             }
         }
 
+        /*
+         * If this node was the last of this possibility of nodes, update the maximum pressure
+         * if this current pressure is bigger.
+         */
         if (!could_add && current_element->total > maximum_pressure) {
             maximum_pressure = current_element->total;
         }
 
+        /*
+         * Go to the next node in the queue and free the current node.
+         */
         head = head->next;
         free(current_element);
     }
@@ -114,8 +195,14 @@ int main() {
         free(distances[i]);
     }
 
+    /*
+     * Print the maximum pressure.
+     */
     free(distances);
 
+    /*
+     * Clean up the allocated memory.
+     */
     delete_pointerlist(nodes);
 
     /*
