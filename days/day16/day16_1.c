@@ -48,12 +48,11 @@ int main() {
     int nodes_size = nodes->size;
 
     /*
-     * Create the head and tail of the queue, starting at the starting index with 30 minutes left.
+     * Create the tail of the stack, starting at the starting index with 30 minutes left.
      */
-    QueueElement *head = malloc(sizeof(QueueElement));
-    QueueElement head_values = {start_index, 0, MINUTES, 0, NULL};
-    *head = head_values;
-    QueueElement *tail = head;
+    StackElement *tail = malloc(sizeof(StackElement));
+    StackElement tail_values = {start_index, 0, MINUTES, 0, NULL};
+    *tail = tail_values;
 
     /*
      * Set the nodes with a flow rate of 0 to be visited already.
@@ -62,7 +61,7 @@ int main() {
 
         if (((Valve *) get_pointer(nodes, i))->flow_rate == 0) {
             int64_t mask = 1;
-            head->visited_nodes |= mask << i;
+            tail->visited_nodes |= mask << i;
         }
     }
 
@@ -72,19 +71,20 @@ int main() {
     int maximum_pressure = 0;
 
     /*
-     * Loop as long as the queue is not empty.
+     * Loop as long as the stack is not empty.
      */
-    while (head != NULL) {
+    while (tail != NULL) {
 
         /*
-         * Get the current element in the queue, its corresponding visited nodes and the current node.
+         * Get the last element in the stack, its corresponding visited nodes and the current node, then update the tail.
          */
-        QueueElement *current_element = head;
+        StackElement *current_element = tail;
+        tail = tail->prev;
         int64_t current_visited = current_element->visited_nodes;
         Valve *current_node = get_pointer(nodes, current_element->node_id);
 
         /*
-         * Update the total of the current element in the queue.
+         * Update the total of the current element.
          */
         current_element->total += current_node->flow_rate * current_element->minutes_left;
 
@@ -108,16 +108,15 @@ int main() {
                     (new_minutes_left = current_element->minutes_left - distances[current_element->node_id][i] - 1) &&
                     (new_minutes_left >= 0)) {
                 /*
-                 * Mark that there was a new node available and add that node to the queue with the new calculated remaining time.
+                 * Mark that there was a new node available and add that node to the stack with the new calculated remaining time.
                  */
                 could_add = 1;
 
-                QueueElement *new_element = malloc(sizeof(QueueElement));
-                QueueElement new_element_values = {i, current_element->total, new_minutes_left, setBitOneAt(current_visited, i), NULL};
+                StackElement *new_element = malloc(sizeof(StackElement));
+                StackElement new_element_values = {i, current_element->total, new_minutes_left, setBitOneAt(current_visited, i), tail};
                 *new_element = new_element_values;
 
-                tail->next = new_element;
-                tail = tail->next;
+                tail = new_element;
             }
         }
 
@@ -129,10 +128,6 @@ int main() {
             maximum_pressure = current_element->total;
         }
 
-        /*
-         * Go to the next node in the queue and free the current node.
-         */
-        head = head->next;
         free(current_element);
     }
 

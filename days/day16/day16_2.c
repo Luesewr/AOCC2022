@@ -48,12 +48,11 @@ int main() {
     int nodes_size = nodes->size;
 
     /*
-     * Create the head and tail of the queue, both starting at the starting index with 26 minutes left.
+     * Create the tail of the stack, both starting at the starting index with 26 minutes left.
      */
-    ElephantQueueElement *head = malloc(sizeof(ElephantQueueElement));
-    ElephantQueueElement head_values = {start_index, start_index, 0, MINUTES, MINUTES, 0, PLAYER, NULL};
-    *head = head_values;
-    ElephantQueueElement *tail = head;
+    ElephantStackElement *tail = malloc(sizeof(ElephantStackElement));
+    ElephantStackElement tail_values = {start_index, start_index, 0, MINUTES, MINUTES, 0, PLAYER, NULL};
+    *tail = tail_values;
 
     /*
      * Set the nodes with a flow rate of 0 to be visited already.
@@ -61,7 +60,7 @@ int main() {
     for (int i = 0; i < nodes_size; i++) {
         if (((Valve *) get_pointer(nodes, i))->flow_rate == 0) {
             int64_t mask = 1;
-            head->visited_nodes |= mask << i;
+            tail->visited_nodes |= mask << i;
         }
     }
 
@@ -71,18 +70,20 @@ int main() {
     int maximum_pressure = 0;
 
     /*
-     * Loop as long as the queue is not empty.
+     * Loop as long as the stack is not empty.
      */
-    while (head != NULL) {
+    while (tail != NULL) {
 
         /*
-         * Get the current element in the queue, its corresponding visited nodes and the current node.
+         * Get the last element in the stack, its corresponding visited nodes and the current node, then update the tail.
          */
-        ElephantQueueElement *current_element = head;
+        ElephantStackElement *current_element = tail;
+
+        tail = tail->prev;
         int64_t current_visited = current_element->visited_nodes;
 
         /*
-         * Update the total of the current element in the queue according to whether this is currently
+         * Update the total of the current element according to whether this is currently
          * the elephant or the person visiting.
          */
         if (current_element->type == PLAYER) {
@@ -117,23 +118,22 @@ int main() {
                         (new_minutes  = current_element->minutes_left - distances[current_element->node_id][i] - 1) &&
                         (new_minutes >= 0)) {
                     /*
-                     * Mark that there was a new node available and add that node to the queue with the new calculated remaining time.
+                     * Mark that there was a new node available and add that node to the stack with the new calculated remaining time.
                      */
                     could_add = 1;
 
-                    ElephantQueueElement *new_element = malloc(sizeof(ElephantQueueElement));
-                    ElephantQueueElement new_element_values = {i,
+                    ElephantStackElement *new_element = malloc(sizeof(ElephantStackElement));
+                    ElephantStackElement new_element_values = {i,
                                                                current_element->elephant_node_id,
                                                                current_element->total,
                                                                current_element->elephant_minutes_left,
                                                                new_minutes,
                                                                setBitOneAt(current_visited, i),
                                                                PLAYER,
-                                                               NULL};
+                                                               tail};
                     *new_element = new_element_values;
 
-                    tail->next = new_element;
-                    tail = tail->next;
+                    tail = new_element;
                 }
             }
         } else {
@@ -152,23 +152,22 @@ int main() {
                         (new_minutes = current_element->elephant_minutes_left - distances[current_element->elephant_node_id][i] - 1) &&
                         (new_minutes >= 0)) {
                     /*
-                     * Mark that there was a new node available and add that node to the queue with the new calculated remaining time.
+                     * Mark that there was a new node available and add that node to the stack with the new calculated remaining time.
                      */
                     could_add = 1;
 
-                    ElephantQueueElement *new_element = malloc(sizeof(ElephantQueueElement));
-                    ElephantQueueElement new_element_values = {current_element->node_id,
+                    ElephantStackElement *new_element = malloc(sizeof(ElephantStackElement));
+                    ElephantStackElement new_element_values = {current_element->node_id,
                                                                i,
                                                                current_element->total,
                                                                new_minutes,
                                                                current_element->minutes_left,
                                                                setBitOneAt(current_visited, i),
                                                                ELEPHANT,
-                                                               NULL};
+                                                               tail};
                     *new_element = new_element_values;
 
-                    tail->next = new_element;
-                    tail = tail->next;
+                    tail = new_element;
                 }
             }
         }
@@ -181,10 +180,6 @@ int main() {
             maximum_pressure = current_element->total;
         }
 
-        /*
-         * Go to the next node in the queue and free the current node.
-         */
-        head = head->next;
         free(current_element);
     }
 
