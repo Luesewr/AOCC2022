@@ -1,5 +1,5 @@
 #cmake_minimum_required(VERSION 3.21)
-project(pointerList C)
+project(AOCC C)
 
 set(CMAKE_C_STANDARD 99)
 
@@ -54,7 +54,9 @@ set(PROJECT_SOURCES
 #        days/day16/day16_1.c
 #        days/day16/day16_2.c
 #        days/day17/day17_1.c
-        days/day17/day17_2.c
+#        days/day17/day17_2.c
+#        days/day18/day18_1.c
+        days/day18/day18_2.c
         library/pointerList.c library/intList.c)
 
 add_executable(main ${PROJECT_SOURCES} ${PROJECT_HEADERS})
