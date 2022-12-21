@@ -68,6 +68,11 @@ void get_highest_points(PointerList *grid, int *highest_points) {
         }
         y--;
     }
+
+    for (int i = 0; i < WIDTH - 1; i++) {
+        highest_points[i] = highest_points[i] - highest_points[i + 1];
+    }
+    highest_points[WIDTH - 1] = 0;
 }
 
 /*
@@ -180,12 +185,12 @@ int main() {
     long long int highest_point = 0;
     long long int highest_point_offset;
     int *highest_points = malloc(sizeof(int) * WIDTH);
+    PointerList *prev_highest_points = initialize_pointerlist();
+    PointerList *prev_rocks_placed = initialize_pointerlist();
+    PointerList *prev_highest_point = initialize_pointerlist();
     long long int shape_index = 0;
     long long int movement_index = 0;
-
-    int *point_relationship = NULL;
-    long long int rocks_placed_at_capture;
-    long long int highest_point_at_capture;
+    int skipped = 0;
 
     while (shape_index < MAX_ROCK_COUNT) {
         Shape *current_shape = get_pointer(shapes, (int)(shape_index % shapes->size));
@@ -208,30 +213,37 @@ int main() {
                     ((current_movement == '<') && x > 0 && !intersects(current_shape, x - 1, y, grid));
             movement_index++;
 
-            if ((movement_index % length == 0) && (shape_index > (shapes->size * 8))) {
+            if ((movement_index % length == 0) && !skipped) {
                 get_highest_points(grid, highest_points);
-                if (point_relationship == NULL) {
-                    point_relationship = highest_points;
-                    highest_points = malloc(sizeof(int) * WIDTH);
-                    rocks_placed_at_capture = shape_index;
-                    highest_point_at_capture = highest_point;
-                } else {
+                for (int i = 0; i < prev_highest_points->size; i++) {
+                    int *cur_prev_highest_points = get_pointer(prev_highest_points, i);
                     int is_same = 1;
-                    for (int j = 1; j < WIDTH; j++) {
-                        if (highest_points[j] - highest_points[j - 1] !=
-                            point_relationship[j] - point_relationship[j - 1]) {
+
+                    for (int j = 0; j < WIDTH; j++) {
+                        if (highest_points[j] !=
+                        cur_prev_highest_points[j]) {
                             is_same = 0;
                             break;
                         }
                     }
+
                     if (is_same) {
+                        long long int rocks_placed_at_capture = get_int(prev_rocks_placed, i);
+                        long long int highest_point_at_capture = get_int(prev_highest_point, i);
                         highest_point_offset =
                                 ((MAX_ROCK_COUNT - rocks_placed_at_capture) / (shape_index - rocks_placed_at_capture) -
                                  1) * (highest_point - highest_point_at_capture);
                         shape_index =
                                 (MAX_ROCK_COUNT - rocks_placed_at_capture) / (shape_index - rocks_placed_at_capture) *
                                 (shape_index - rocks_placed_at_capture) + rocks_placed_at_capture;
+                        skipped = 1;
                     }
+                }
+                if (!skipped) {
+                    add_pointer(prev_highest_points, highest_points);
+                    highest_points = malloc(sizeof(int) * WIDTH);
+                    add_int(prev_rocks_placed, (int) shape_index);
+                    add_int(prev_highest_point, (int) highest_point);
                 }
             }
 
@@ -265,9 +277,13 @@ int main() {
 
     delete_pointerlist(shapes);
 
-    free(highest_points);
+    delete_pointerlist(prev_highest_points);
 
-    free(point_relationship);
+    delete_pointerlist(prev_highest_point);
+
+    delete_pointerlist(prev_rocks_placed);
+
+    free(highest_points);
 
     /*
      * Close the timer and print the taken time.
