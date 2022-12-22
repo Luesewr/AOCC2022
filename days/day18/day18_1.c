@@ -63,8 +63,6 @@ int main() {
         return 1;
     }
 
-    char line[12];
-
     PointerList *Grid3D = initialize_pointerlist_of_capacity(25);
 
     for (int x = 0; x < Grid3D->capacity; x++) {
@@ -84,6 +82,8 @@ int main() {
     }
 
     PointerList *points = initialize_pointerlist();
+
+    char line[12];
 
     /*
      * Loop over the input file.
@@ -128,9 +128,11 @@ int main() {
 
             delete_pointerlist(Grid1D);
         }
+
+        delete_pointerlist_not_pointers(Grid2D);
     }
 
-    delete_pointerlist(Grid3D);
+    delete_pointerlist_not_pointers(Grid3D);
 
     delete_pointerlist(points);
 

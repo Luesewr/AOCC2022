@@ -148,6 +148,8 @@ int main() {
         flood_outside(Grid3D, stack, x, y, z - 1);
     }
 
+    delete_pointerlist(stack);
+
     int surface_area = 0;
 
     for (int i = 0; i < points->size; i++) {
@@ -170,9 +172,11 @@ int main() {
 
             delete_pointerlist(Grid1D);
         }
+
+        delete_pointerlist_not_pointers(Grid2D);
     }
 
-    delete_pointerlist(Grid3D);
+    delete_pointerlist_not_pointers(Grid3D);
 
     delete_pointerlist(points);
 
