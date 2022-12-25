@@ -156,6 +156,9 @@ int main() {
             //Can I buy a robot
             for (int j = 0; j < ROBOT_AMOUNT; j++) {
                 Robot *current_robot = &(current_blueprint->robots[j]);
+                if (j + 2 < ROBOT_AMOUNT && current_element->robot_count[j + 2]) {
+                    continue;
+                }
 
                 //Can I buy *this* robot
                 int can_afford = 1;
