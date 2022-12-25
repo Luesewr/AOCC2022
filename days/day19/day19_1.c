@@ -17,7 +17,6 @@ typedef enum Material {
 } Material;
 
 typedef struct Robot {
-    Material material;
     int prices[ROBOT_AMOUNT];
 } Robot;
 
@@ -50,7 +49,7 @@ int main() {
 
     FILE *file;
 
-    file = fopen("../days/day19/testInput_day19.txt", "r");
+    file = fopen("../days/day19/input_day19.txt", "r");
 
     /*
      * Shutdown program if the file can't be found or another error occurred.
@@ -83,7 +82,6 @@ int main() {
 
         ptr += 23;
 
-        current_blueprint->robots[0].material = ORE;
         current_blueprint->robots[0].prices[0] = (int) strtol(ptr, &ptr, 10);
         current_blueprint->robots[0].prices[1] = 0;
         current_blueprint->robots[0].prices[2] = 0;
@@ -92,35 +90,32 @@ int main() {
 
         ptr += 28;
 
-        current_blueprint->robots[1].material = CLAY;
         current_blueprint->robots[1].prices[0] = (int) strtol(ptr, &ptr, 10);
         current_blueprint->robots[1].prices[1] = 0;
         current_blueprint->robots[1].prices[2] = 0;
-        current_blueprint->robots[0].prices[3] = 0;
+        current_blueprint->robots[1].prices[3] = 0;
 
 
         ptr += 32;
 
-        current_blueprint->robots[2].material = OBSIDIAN;
         current_blueprint->robots[2].prices[0] = (int) strtol(ptr, &ptr, 10);
 
         ptr += 9;
 
         current_blueprint->robots[2].prices[1] = (int) strtol(ptr, &ptr, 10);
         current_blueprint->robots[2].prices[2] = 0;
-        current_blueprint->robots[0].prices[3] = 0;
+        current_blueprint->robots[2].prices[3] = 0;
 
 
         ptr += 30;
 
-        current_blueprint->robots[3].material = GEODE;
         current_blueprint->robots[3].prices[0] = (int) strtol(ptr, &ptr, 10);
         current_blueprint->robots[3].prices[1] = 0;
 
         ptr += 9;
 
         current_blueprint->robots[3].prices[2] = (int) strtol(ptr, &ptr, 10);
-        current_blueprint->robots[0].prices[3] = 0;
+        current_blueprint->robots[3].prices[3] = 0;
     }
 
     fclose(file);
@@ -129,8 +124,6 @@ int main() {
 
     for (int i = 0; i < blueprints->size; i++) {
         Blueprint *current_blueprint = get_pointer(blueprints, i);
-
-        printf("%d\n", current_blueprint->id);
 
         PointerList *stack = initialize_pointerlist();
 
@@ -144,13 +137,8 @@ int main() {
         add_pointer(stack, start_element);
 
         int maximum_current_geodes = 0;
-
         while (stack->size > 0) {
             StackElement *current_element = remove_at(stack, stack->size - 1);
-
-//            printf("%d\n", current_element->minutes_left);
-            printf("Materials: %d, %d, %d, %d\n", current_element->material_count[0], current_element->material_count[1], current_element->material_count[2], current_element->material_count[3]);
-            printf("Robots: %d, %d, %d, %d\n", current_element->robot_count[0], current_element->robot_count[1], current_element->robot_count[2], current_element->robot_count[3]);
 
             if (current_element->minutes_left == 0) {
                 int current_geodes = current_element->material_count[GEODE];
@@ -165,30 +153,37 @@ int main() {
 
             int can_afford_any = 0;
 
+            //Can I buy a robot
             for (int j = 0; j < ROBOT_AMOUNT; j++) {
                 Robot *current_robot = &(current_blueprint->robots[j]);
 
+                //Can I buy *this* robot
                 int can_afford = 1;
                 int minimum_cycles_needed = 1;
                 for (int k = 0; k < ROBOT_AMOUNT; k++) {
-                    int current_robot_part_count = current_element->robot_count[k];
+                    int current_robots_owned_count = current_element->robot_count[k];
                     int current_material_count = current_element->material_count[k];
                     int current_robot_part_price = current_robot->prices[k];
 
-                    if (current_robot_part_price > 0 && current_robot_part_count == 0) {
+                    if (current_robots_owned_count == 0 && current_robot_part_price > 0) {
                         can_afford = 0;
-                        continue;
-                    } else if (current_robot_part_count > 0) {
+                        break;
+                    } else if (current_robot_part_price > 0 && current_robots_owned_count > 0) {
                         int cycles_needed =
-                                (current_robot_part_count - current_material_count + current_robot_part_price - 1) /
-                                        current_robot_part_count;
-                        if (cycles_needed > minimum_cycles_needed) {
-                            minimum_cycles_needed = cycles_needed;
+                                (current_robot_part_price - current_material_count + current_robots_owned_count - 1) /
+                                current_robots_owned_count;
+                        if (cycles_needed + 1 > minimum_cycles_needed) {
+                            minimum_cycles_needed = cycles_needed + 1;
                         }
                     }
                 }
 
-                if (can_afford && current_element->minutes_left - minimum_cycles_needed >= 0) {
+                int new_minutes_left = current_element->minutes_left - minimum_cycles_needed;
+                int geode_robots_owned = current_element->robot_count[GEODE];
+                int best_possible_geodes_for_current = ((new_minutes_left + geode_robots_owned) * (new_minutes_left + geode_robots_owned + 1)) / 2;
+
+                //If I can buy this robot within the time left I create a new timeline where I bought it.
+                if (can_afford && new_minutes_left > 0 && best_possible_geodes_for_current >= (maximum_current_geodes - current_element->material_count[GEODE])) {
                     can_afford_any = 1;
 
                     StackElement *new_element = malloc(sizeof(StackElement));
@@ -221,47 +216,33 @@ int main() {
             }
 
             if (!can_afford_any) {
-                StackElement *new_element = malloc(sizeof(StackElement));
                 int (*robot_count)[ROBOT_AMOUNT] = &current_element->robot_count;
-                int (*material_count)[ROBOT_AMOUNT] = &current_element->material_count;
 
-                int minimum_cycles_needed = MINUTES - current_element->minutes_left;
+                int minimum_cycles_needed = current_element->minutes_left;
 
-                StackElement new_element_values = {0,
-                                                   {
-                                                           (*material_count)[0] +
-                                                           (*robot_count)[0] * minimum_cycles_needed,
-                                                           (*material_count)[1] +
-                                                           (*robot_count)[1] * minimum_cycles_needed,
-                                                           (*material_count)[2] +
-                                                           (*robot_count)[2] * minimum_cycles_needed,
-                                                           (*material_count)[3] +
-                                                           (*robot_count)[3] * minimum_cycles_needed,
-                                                   }, {
-                                                           (*robot_count)[0],
-                                                           (*robot_count)[1],
-                                                           (*robot_count)[2],
-                                                           (*robot_count)[3],
-                                                   }};
-                *new_element = new_element_values;
-                add_pointer(stack, new_element);
+
+                current_element->material_count[0] += (*robot_count)[0] * minimum_cycles_needed;
+                current_element->material_count[1] += (*robot_count)[1] * minimum_cycles_needed;
+                current_element->material_count[2] += (*robot_count)[2] * minimum_cycles_needed;
+                current_element->material_count[3] += (*robot_count)[3] * minimum_cycles_needed;
+                current_element->minutes_left = 0;
+                add_pointer(stack, current_element);
+            } else {
+                free(current_element);
             }
-
-            free(current_element);
         }
 
         add_int(maximum_geodes, maximum_current_geodes);
+        delete_pointerlist(stack);
     }
 
-    int maximum_geode = 0;
+    int total_quality_level = 0;
 
-    for (int i = 0; i < maximum_geodes->size; i++) {
-        if (maximum_geode < get_int(maximum_geodes, i)) {
-            maximum_geode = get_int(maximum_geodes, i);
-        }
+    for (int i = 0; i < blueprints->size; i++) {
+        total_quality_level += ((Blueprint *) get_pointer(blueprints, i))->id * get_int(maximum_geodes, i);
     }
 
-    printf("%d\n", maximum_geode);
+    printf("%d\n", total_quality_level);
 
     delete_pointerlist(maximum_geodes);
 
