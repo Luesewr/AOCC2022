@@ -22,6 +22,7 @@ typedef struct Robot {
 typedef struct Blueprint {
     int id;
     Robot robots[ROBOT_AMOUNT];
+    int highest_prices[ROBOT_AMOUNT];
 } Blueprint;
 
 typedef struct StackElement {
@@ -78,6 +79,10 @@ int main() {
 
         current_blueprint->id = (int) strtol(ptr, &ptr, 10);
 
+        current_blueprint->highest_prices[0] = 0;
+        current_blueprint->highest_prices[1] = 0;
+        current_blueprint->highest_prices[2] = 0;
+        current_blueprint->highest_prices[3] = 0;
 
         ptr += 23;
 
@@ -86,6 +91,10 @@ int main() {
         current_blueprint->robots[0].prices[2] = 0;
         current_blueprint->robots[0].prices[3] = 0;
 
+        if (current_blueprint->robots[0].prices[0] > current_blueprint->highest_prices[0]) {
+            current_blueprint->highest_prices[0] = current_blueprint->robots[0].prices[0];
+        }
+
 
         ptr += 28;
 
@@ -93,6 +102,10 @@ int main() {
         current_blueprint->robots[1].prices[1] = 0;
         current_blueprint->robots[1].prices[2] = 0;
         current_blueprint->robots[1].prices[3] = 0;
+
+        if (current_blueprint->robots[1].prices[0] > current_blueprint->highest_prices[0]) {
+            current_blueprint->highest_prices[0] = current_blueprint->robots[1].prices[0];
+        }
 
 
         ptr += 32;
@@ -105,6 +118,12 @@ int main() {
         current_blueprint->robots[2].prices[2] = 0;
         current_blueprint->robots[2].prices[3] = 0;
 
+        if (current_blueprint->robots[2].prices[0] > current_blueprint->highest_prices[0]) {
+            current_blueprint->highest_prices[0] = current_blueprint->robots[2].prices[0];
+        }
+        if (current_blueprint->robots[2].prices[1] > current_blueprint->highest_prices[1]) {
+            current_blueprint->highest_prices[1] = current_blueprint->robots[2].prices[1];
+        }
 
         ptr += 30;
 
@@ -115,6 +134,13 @@ int main() {
 
         current_blueprint->robots[3].prices[2] = (int) strtol(ptr, &ptr, 10);
         current_blueprint->robots[3].prices[3] = 0;
+
+        if (current_blueprint->robots[3].prices[0] > current_blueprint->highest_prices[0]) {
+            current_blueprint->highest_prices[0] = current_blueprint->robots[3].prices[0];
+        }
+        if (current_blueprint->robots[3].prices[2] > current_blueprint->highest_prices[2]) {
+            current_blueprint->highest_prices[2] = current_blueprint->robots[3].prices[2];
+        }
     }
 
     fclose(file);
@@ -154,10 +180,15 @@ int main() {
 
             //Can I buy a robot
             for (int j = 0; j < ROBOT_AMOUNT; j++) {
-                Robot *current_robot = &(current_blueprint->robots[j]);
+                if (current_element->robot_count[j] > current_blueprint->highest_prices[j] + 2) {
+                    continue;
+                }
+
                 if (j + 2 < ROBOT_AMOUNT && current_element->robot_count[j + 2]) {
                     continue;
                 }
+
+                Robot *current_robot = &(current_blueprint->robots[j]);
 
                 //Can I buy *this* robot
                 int can_afford = 1;
@@ -183,6 +214,7 @@ int main() {
                 int new_minutes_left = current_element->minutes_left - minimum_cycles_needed;
                 int geode_robots_owned = current_element->robot_count[GEODE];
                 int best_possible_geodes_for_current = ((new_minutes_left + geode_robots_owned) * (new_minutes_left + geode_robots_owned + 1)) / 2;
+                best_possible_geodes_for_current -= ((geode_robots_owned - 2) * (geode_robots_owned - 1)) / 2;
 
                 //If I can buy this robot within the time left I create a new timeline where I bought it.
                 if (can_afford && new_minutes_left > 0 && best_possible_geodes_for_current >= (maximum_current_geodes - current_element->material_count[GEODE])) {
