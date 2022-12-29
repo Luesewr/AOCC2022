@@ -206,6 +206,16 @@ int contains(PointerList *pointerlist, void * value) {
     return index_of(pointerlist, value) != -1;
 }
 
+int contains_with(PointerList *pointerlist, int (*predicate)(void *)) {
+    for (int i = 0; i < pointerlist->size; i++) {
+        if (predicate(get_pointer(pointerlist, i))) {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
 void swap_pointers(void ** arr, int i, int j) {
     void *temp = arr[i];
     arr[i] = arr[j];

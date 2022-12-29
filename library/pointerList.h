@@ -47,6 +47,8 @@ int index_of(PointerList *pointerlist, void * value);
 
 int contains(PointerList *pointerlist, void * value);
 
+int contains_with(PointerList *pointerlist, int (*predicate)(void *));
+
 void swap_pointers(void ** arr, int i, int j);
 
 int partition_pointers(void ** arr, int low, int high, int *lp, int (*comparator)(void *, void *));

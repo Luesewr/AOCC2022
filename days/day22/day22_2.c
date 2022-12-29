@@ -112,7 +112,7 @@ void get_next_y(Face *face, int next_face_index, int *x, int *y, int *direction)
 }
 
 /*
- * Day 22, Part 1
+ * Day 22, Part 2
  */
 int main() {
 
