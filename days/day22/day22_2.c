@@ -269,7 +269,7 @@ int main() {
     Face *current_face = get_pointer(faces, 0);
     int is_number = 1;
 
-    while (ptr[0] != '\n') {
+    while (ptr[0] != '\n' && ptr[0] != '\r') {
         direction = (direction + 4) % 4;
         if (is_number) {
             int amount = (int) strtol(ptr, &ptr, 10);

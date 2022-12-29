@@ -141,6 +141,8 @@ int main() {
         if (current_blueprint->robots[3].prices[2] > current_blueprint->highest_prices[2]) {
             current_blueprint->highest_prices[2] = current_blueprint->robots[3].prices[2];
         }
+
+        current_blueprint->highest_prices[3] = (int) 0x7FFFFFFF;
     }
 
     fclose(file);
@@ -183,7 +185,7 @@ int main() {
             //Can I buy a robot
             for (int j = 0; j < ROBOT_AMOUNT; j++) {
 
-                if (current_element->robot_count[j] > (current_blueprint->highest_prices[j] + 8)) {
+                if (current_element->robot_count[j] > (current_blueprint->highest_prices[j])) {
                     continue;
                 }
                 if (j + 2 < ROBOT_AMOUNT && current_element->robot_count[j + 2]) {
