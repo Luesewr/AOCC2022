@@ -233,21 +233,32 @@ int main() {
     while (faces_connected < faces->size * 4) {
         for (int i = 0; i < faces->size; i++) {
             Face *current_face = get_pointer(faces, i);
-            for (int j = 0; j < 4; j++) {
-                if (current_face->neighbours[j] == NULL) {
-                    if (current_face->neighbours[(j + 4 - 1) % 4] != NULL) {
-                        int direction_change = current_face->direction_change[(j + 4 - 1) % 4];
-                        if (current_face->neighbours[(j + 4 - 1) % 4]->neighbours[(j + direction_change + 4) % 4] != NULL) {
-                            current_face->neighbours[j] = current_face->neighbours[(j + 4 - 1) % 4]->neighbours[(j + direction_change + 4) % 4];
-                            current_face->direction_change[j] = (direction_change + current_face->neighbours[(j + 4 - 1) % 4]->direction_change[(j + 4 + direction_change) % 4] - 1 + 4) % 4;
-                            faces_connected++;
+            for (int current_direction = 0; current_direction < 4; current_direction++) {
+                if (current_face->neighbours[current_direction] == NULL) {
+                    Face *left_neighbour = current_face->neighbours[(current_direction + 4 - 1) % 4];
+                    Face *right_neighbour = current_face->neighbours[(current_direction + 4 + 1) % 4];
+
+                    if (left_neighbour != NULL) {
+                        int direction_change = current_face->direction_change[(current_direction + 4 - 1) % 4];
+                        Face *left_diagonal_neighbour = left_neighbour->neighbours[(current_direction + direction_change + 4) % 4];
+                        if (left_diagonal_neighbour != NULL) {
+                            int nested_direction_change = direction_change + left_neighbour->direction_change[(current_direction + 4 + direction_change) % 4];
+                            current_face->neighbours[current_direction] = left_diagonal_neighbour;
+                            left_diagonal_neighbour->neighbours[(current_direction + nested_direction_change + 1 + 4) % 4] = current_face;
+                            current_face->direction_change[current_direction] = (nested_direction_change - 1 + 4) % 4;
+                            left_diagonal_neighbour->direction_change[(current_direction + nested_direction_change + 1 + 4) % 4] = ((4 - (nested_direction_change - 1)) + 4) % 4;
+                            faces_connected += 2;
                         }
-                    } else if (current_face->neighbours[(j + 1) % 4] != NULL) {
-                        int direction_change = current_face->direction_change[(j + 1) % 4];
-                        if (current_face->neighbours[(j + 1) % 4]->neighbours[(j + direction_change + 4) % 4] != NULL) {
-                            current_face->neighbours[j] = current_face->neighbours[(j + 4 + 1) % 4]->neighbours[(j + direction_change + 4) % 4];
-                            current_face->direction_change[j] = (direction_change + current_face->neighbours[(j + 4 + 1) % 4]->direction_change[(j + 4 + direction_change) % 4] + 1 + 4) % 4;
-                            faces_connected++;
+                    } else if (right_neighbour != NULL) {
+                        int direction_change = current_face->direction_change[(current_direction + 4 + 1) % 4];
+                        Face *right_diagonal_neighbour = right_neighbour->neighbours[(current_direction + direction_change + 4) % 4];
+                        if (right_diagonal_neighbour != NULL) {
+                            int nested_direction_change = direction_change + right_neighbour->direction_change[(current_direction + 4 + direction_change) % 4];
+                            current_face->neighbours[current_direction] = right_diagonal_neighbour;
+                            right_diagonal_neighbour->neighbours[(current_direction + nested_direction_change - 1 + 4) % 4] = current_face;
+                            current_face->direction_change[current_direction] = (nested_direction_change + 1 + 4) % 4;
+                            right_diagonal_neighbour->direction_change[(current_direction + nested_direction_change - 1 + 4) % 4] = ((4 - (nested_direction_change + 1)) + 4) % 4;
+                            faces_connected += 2;
                         }
                     }
                 }

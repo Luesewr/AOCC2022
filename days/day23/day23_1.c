@@ -169,37 +169,31 @@ int main() {
                 }
             }
 
-//            printf("Elf: %d, %d, can go: %d, %d, %d, %d\n", current_elf->x, current_elf->y, move_options[0], move_options[3], move_options[1], move_options[2]);
-
             int px, py;
-            int moved = 0;
-            for (int k = 0; k < 4; k++) {
-                if ((k + i) % 4 == 0 && move_options[0]) {
-                    px = current_elf->x;
-                    py = current_elf->y - 1;
-                    moved = 1;
-                    break;
-                } else if ((k + i) % 4 == 1 && move_options[1]) {
-                    px = current_elf->x;
-                    py = current_elf->y + 1;
-                    moved = 1;
-                    break;
-                } else if ((k + i) % 4 == 2 && move_options[2]) {
-                    px = current_elf->x - 1;
-                    py = current_elf->y;
-                    moved = 1;
-                    break;
-                } else if ((k + i) % 4 == 3 && move_options[3]) {
-                    px = current_elf->x + 1;
-                    py = current_elf->y;
-                    moved = 1;
-                    break;
-                }
-            }
 
-            if (!moved || (options_amount == 4)) {
+            if ((options_amount == 0) || (options_amount == 4)) {
                 px = current_elf->x;
                 py = current_elf->y;
+            } else {
+                for (int k = 0; k < 4; k++) {
+                    if ((k + i) % 4 == 0 && move_options[0]) {
+                        px = current_elf->x;
+                        py = current_elf->y - 1;
+                        break;
+                    } else if ((k + i) % 4 == 1 && move_options[1]) {
+                        px = current_elf->x;
+                        py = current_elf->y + 1;
+                        break;
+                    } else if ((k + i) % 4 == 2 && move_options[2]) {
+                        px = current_elf->x - 1;
+                        py = current_elf->y;
+                        break;
+                    } else if ((k + i) % 4 == 3 && move_options[3]) {
+                        px = current_elf->x + 1;
+                        py = current_elf->y;
+                        break;
+                    }
+                }
             }
 
             for (int k = 0; k < proposals->size; k++) {
@@ -231,12 +225,6 @@ int main() {
         }
 
         delete_pointerlist(proposals);
-
-//        for (int j = 0; j < elves->size; j++) {
-//            Elf *current_elf = get_pointer(elves, j);
-//            printf("Elf: %d, %d\n", current_elf->x, current_elf->y);
-//        }
-//        printf("\n");
     }
 
     for (int i = 0; i < elves->size; i++) {
