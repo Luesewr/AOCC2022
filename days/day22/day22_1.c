@@ -168,6 +168,8 @@ int main() {
 
     printf("%d\n", password);
 
+    fclose(file);
+
     delete_pointerlist(offsets);
 
     for (int i = 0; i < lines->size; i++) {

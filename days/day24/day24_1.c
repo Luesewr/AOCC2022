@@ -322,6 +322,8 @@ int main() {
 
     printf("%d\n", time_needed);
 
+    fclose(file);
+
     QueueElement *current_removal_element = head;
     while (current_removal_element != NULL) {
         QueueElement *temp = current_removal_element->next;

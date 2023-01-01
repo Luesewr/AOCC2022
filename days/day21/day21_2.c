@@ -285,6 +285,8 @@ int main() {
 
     printf("%lld\n", current_value);
 
+    fclose(file);
+
     delete_pointerlist(path);
 
     for (int i = 0; i < monkeys->size; i++) {

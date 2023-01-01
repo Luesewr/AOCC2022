@@ -326,6 +326,8 @@ int main() {
 
     printf("%d\n", password);
 
+    fclose(file);
+
     delete_pointerlist(faces);
 
     /*

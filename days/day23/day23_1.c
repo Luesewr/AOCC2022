@@ -252,6 +252,8 @@ int main() {
 
     printf("%d\n", empty_cells);
 
+    fclose(file);
+
     for (int i = 0; i < elves_by_row->size; i++) {
         PointerList *current_row = get_pointer(elves_by_row, i);
         delete_pointerlist_not_pointers(current_row);

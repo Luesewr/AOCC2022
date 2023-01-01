@@ -188,6 +188,8 @@ int main() {
 
     printf("%lld\n", result);
 
+    fclose(file);
+
     for (int i = 0; i < monkeys->size; i++) {
         Monkey *current = get_pointer(monkeys, i);
         free(current->data);
