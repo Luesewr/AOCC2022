@@ -67,7 +67,7 @@ void shrink_max_amount(PointerList *pointerList) {
 }
 
 int delete_pointerlist(PointerList *pointerlist) {
-    for (int i = 0; i < pointerlist->capacity; i++) {
+    for (int i = 0; i < pointerlist->size; i++) {
         free(pointerlist->pointers[i]);
     }
     free(pointerlist->pointers);

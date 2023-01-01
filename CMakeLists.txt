@@ -66,7 +66,9 @@ set(PROJECT_SOURCES
 #        days/day22/day22_1.c
 #        days/day22/day22_2.c
 #        days/day23/day23_1.c
-        days/day23/day23_2.c
+#        days/day23/day23_2.c
+#        days/day24/day24_1.c
+        days/day24/day24_2.c
         library/pointerList.c library/intList.c)
 
 add_executable(main ${PROJECT_SOURCES} ${PROJECT_HEADERS})
