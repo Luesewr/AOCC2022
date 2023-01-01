@@ -157,6 +157,14 @@ int main() {
 
     printf("%s\n", result);
 
+    for (int i = 0; i < numbers->size; i++) {
+        PointerList *current_list = get_pointer(numbers, i);
+        delete_pointerlist(current_list);
+    }
+
+    delete_pointerlist_not_pointers(numbers);
+    delete_pointerlist(total);
+
     /*
     * Close the timer and print the taken time.
     */
