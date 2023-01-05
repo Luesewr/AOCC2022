@@ -8,6 +8,16 @@
 
 #define MINUTES 26
 
+PointerList *current_nodes;
+
+int sort_by_flow_rate(int i, int j) {
+    Valve *node_i = get_pointer(current_nodes, i);
+    Valve *node_j = get_pointer(current_nodes, j);
+    int flow_rate_i = node_i->flow_rate;
+    int flow_rate_j = node_j->flow_rate;
+    return flow_rate_j - flow_rate_i;
+}
+
 /*
  * Day 16, Part 2
  */
@@ -40,12 +50,22 @@ int main() {
     /*
      * Calculate the minimum distance to get to each node from each node.
      */
-    int ** distances = calculate_minimum_distances(nodes);
+    int **distances = calculate_minimum_distances(nodes);
 
     /*
      * Store the amount of nodes, because it is used a lot.
      */
     int nodes_size = nodes->size;
+
+    current_nodes = nodes;
+
+    PointerList *traversal_order = initialize_pointerlist_of_capacity(nodes_size);
+
+    for (int j = 0; j < nodes_size; j++) {
+        add_int(traversal_order, j);
+    }
+
+    sort_ints_with_comparator(traversal_order, &sort_by_flow_rate);
 
     /*
      * Create the tail of the stack, both starting at the starting index with 26 minutes left.
@@ -99,6 +119,28 @@ int main() {
          */
         int could_add = 0;
 
+        int maximum_additional_pressure = 0;
+
+        int minutes_left = current_element->minutes_left - 2;
+
+        for (int i = 0; i < nodes_size && minutes_left >= 0; i++) {
+            int current_node_index = get_int(traversal_order, i);
+            Valve *node_at_index = get_pointer(nodes, current_node_index);
+
+            if (bitAt(current_visited, current_node_index)) {
+                continue;
+            }
+
+            maximum_additional_pressure += node_at_index->flow_rate * minutes_left;
+
+            minutes_left -= 2;
+        }
+
+        if (maximum_additional_pressure + current_element->total <= maximum_pressure) {
+            free(current_element);
+            continue;
+        }
+
         /*
          * Check if it's the elephant's or the person's turn.
          */
@@ -107,6 +149,7 @@ int main() {
              * Go through all the nodes.
              */
             for (int i = 0; i < nodes_size; i++) {
+                int current_node_index = get_int(traversal_order, i);
 
                 /*
                  * Check if this node is already visited and if the time that it would give it
@@ -114,21 +157,21 @@ int main() {
                  */
                 int new_minutes;
 
-                if (    (!bitAt(current_visited, i)) &&
-                        (new_minutes  = current_element->minutes_left - distances[current_element->node_id][i] - 1) &&
-                        (new_minutes >= 0)) {
+                if ((!bitAt(current_visited, current_node_index)) &&
+                    (new_minutes = current_element->minutes_left - distances[current_element->node_id][current_node_index] - 1) &&
+                    (new_minutes >= 0)) {
                     /*
                      * Mark that there was a new node available and add that node to the stack with the new calculated remaining time.
                      */
                     could_add = 1;
 
                     ElephantStackElement *new_element = malloc(sizeof(ElephantStackElement));
-                    ElephantStackElement new_element_values = {i,
+                    ElephantStackElement new_element_values = {current_node_index,
                                                                current_element->elephant_node_id,
                                                                current_element->total,
                                                                current_element->elephant_minutes_left,
                                                                new_minutes,
-                                                               setBitOneAt(current_visited, i),
+                                                               setBitOneAt(current_visited, current_node_index),
                                                                PLAYER,
                                                                tail};
                     *new_element = new_element_values;
@@ -137,10 +180,12 @@ int main() {
                 }
             }
         } else {
+
             /*
              * Go through all the nodes.
              */
             for (int i = 0; i < nodes_size; i++) {
+                int current_node_index = get_int(traversal_order, i);
 
                 /*
                  * Check if this node is already visited and if the time that it would give it
@@ -148,9 +193,10 @@ int main() {
                  */
                 int new_minutes;
 
-                if (    (!bitAt(current_visited, i)) &&
-                        (new_minutes = current_element->elephant_minutes_left - distances[current_element->elephant_node_id][i] - 1) &&
-                        (new_minutes >= 0)) {
+                if ((!bitAt(current_visited, current_node_index)) &&
+                    (new_minutes = current_element->elephant_minutes_left -
+                                   distances[current_element->elephant_node_id][current_node_index] - 1) &&
+                    (new_minutes >= 0)) {
                     /*
                      * Mark that there was a new node available and add that node to the stack with the new calculated remaining time.
                      */
@@ -158,11 +204,11 @@ int main() {
 
                     ElephantStackElement *new_element = malloc(sizeof(ElephantStackElement));
                     ElephantStackElement new_element_values = {current_element->node_id,
-                                                               i,
+                                                               current_node_index,
                                                                current_element->total,
                                                                new_minutes,
                                                                current_element->minutes_left,
-                                                               setBitOneAt(current_visited, i),
+                                                               setBitOneAt(current_visited, current_node_index),
                                                                ELEPHANT,
                                                                tail};
                     *new_element = new_element_values;
