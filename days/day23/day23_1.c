@@ -105,8 +105,12 @@ int main() {
             add_pointer(current_row, current_elf);
             add_pointer(current_column, current_elf);
         }
-        
-        PointerList *proposals = initialize_pointerlist();
+
+        PointerList *proposals_by_row = initialize_pointerlist_of_capacity(y);
+
+        for (int k = 0; k < y; k++) {
+            add_pointer(proposals_by_row, initialize_pointerlist());
+        }
 
         for (int j = 0; j < elves->size; j++) {
             Elf *current_elf = get_pointer(elves, j);
@@ -196,16 +200,23 @@ int main() {
                 }
             }
 
-            for (int k = 0; k < proposals->size; k++) {
-                Proposal *current_proposal = get_pointer(proposals, k);
+            PointerList *current_proposal_row = get_pointer(proposals_by_row, (py + proposals_by_row->size * (i / proposals_by_row->size + 1)) % proposals_by_row->size);
+
+            for (int k = 0; k < current_proposal_row->size; k++) {
+                Proposal *current_proposal = get_pointer(current_proposal_row, k);
                 if (current_proposal->px == px && current_proposal->py == py) {
                     px = current_elf->x;
                     py = current_elf->y;
                     current_proposal->px = current_proposal->ox;
                     current_proposal->py = current_proposal->oy;
+                    Proposal *removed_proposal = remove_at(current_proposal_row, k);
+                    PointerList *new_removed_proposal_row = get_pointer(proposals_by_row, (current_proposal->py + proposals_by_row->size * (i / proposals_by_row->size + 1)) % proposals_by_row->size);
+                    add_pointer(new_removed_proposal_row, removed_proposal);
                     break;
                 }
             }
+
+            PointerList *new_proposal_row = get_pointer(proposals_by_row, (py + proposals_by_row->size * (i / proposals_by_row->size + 1)) % proposals_by_row->size);
 
             Proposal *new_proposal = malloc(sizeof(Proposal));
 
@@ -215,16 +226,20 @@ int main() {
             new_proposal->oy = current_elf->y;
             new_proposal->elf = current_elf;
 
-            add_pointer(proposals, new_proposal);
+            add_pointer(new_proposal_row, new_proposal);
         }
 
-        for (int j = 0; j < proposals->size; j++) {
-            Proposal *current_proposal = get_pointer(proposals, j);
-            current_proposal->elf->x = current_proposal->px;
-            current_proposal->elf->y = current_proposal->py;
+        for (int j = 0; j < proposals_by_row->size; j++) {
+            PointerList *current_proposal_row = get_pointer(proposals_by_row, j);
+            for (int k = 0; k < current_proposal_row->size; k++) {
+                Proposal *current_proposal = get_pointer(current_proposal_row, k);
+                current_proposal->elf->x = current_proposal->px;
+                current_proposal->elf->y = current_proposal->py;
+            }
+            delete_pointerlist(current_proposal_row);
         }
 
-        delete_pointerlist(proposals);
+        delete_pointerlist_not_pointers(proposals_by_row);
     }
 
     for (int i = 0; i < elves->size; i++) {
