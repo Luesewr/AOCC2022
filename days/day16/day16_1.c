@@ -190,6 +190,8 @@ int main() {
     free(distances);
 
     delete_pointerlist(nodes);
+    
+    delete_pointerlist(traversal_order);
 
     /*
     * Close the timer and print the taken time.
