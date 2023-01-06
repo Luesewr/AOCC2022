@@ -2,8 +2,8 @@
 // Created by Laure on 2022-12-10.
 //
 
-#ifndef POINTERLIST_DAY9_FUNCTIONS_H
-#define POINTERLIST_DAY9_FUNCTIONS_H
+#ifndef AOCC_DAY9_FUNCTIONS_H
+#define AOCC_DAY9_FUNCTIONS_H
 
 #include "../../library/pointerList.h"
 
@@ -32,4 +32,4 @@ void add_to_set(pointSet *set, int x, int y);
 
 void delete_point_set(pointSet * set);
 
-#endif //POINTERLIST_DAY9_FUNCTIONS_H
+#endif //AOCC_DAY9_FUNCTIONS_H

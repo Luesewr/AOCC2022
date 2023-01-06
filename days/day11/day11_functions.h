@@ -2,8 +2,8 @@
 // Created by Laure on 2022-12-11.
 //
 
-#ifndef POINTERLIST_DAY11_FUNCTIONS_H
-#define POINTERLIST_DAY11_FUNCTIONS_H
+#ifndef AOCC_DAY11_FUNCTIONS_H
+#define AOCC_DAY11_FUNCTIONS_H
 
 #include "../../library/pointerList.h"
 
@@ -47,4 +47,4 @@ long reverseLongComparator(long i, long j);
 
 int findEnd(const char * array);
 
-#endif //POINTERLIST_DAY11_FUNCTIONS_H
+#endif //AOCC_DAY11_FUNCTIONS_H

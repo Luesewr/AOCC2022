@@ -2,8 +2,10 @@
 // Created by Laure on 2022-12-13.
 //
 
-#ifndef POINTERLIST_DAY13_FUNCTIONS_H
-#define POINTERLIST_DAY13_FUNCTIONS_H
+#ifndef AOCC_DAY13_FUNCTIONS_H
+#define AOCC_DAY13_FUNCTIONS_H
+
+#include "../../library/pointerList.h"
 
 int isPointerList(PointerList *list, int index);
 
@@ -13,4 +15,4 @@ int packetComparator(void *one, void *two);
 
 void deletePackets(PointerList *packets);
 
-#endif //POINTERLIST_DAY13_FUNCTIONS_H
+#endif //AOCC_DAY13_FUNCTIONS_H

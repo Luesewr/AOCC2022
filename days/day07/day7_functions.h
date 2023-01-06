@@ -1,7 +1,7 @@
 #include "../../library/pointerList.h"
 
-#ifndef POINTERLIST_DAY7_FUNCTIONS_H
-#define POINTERLIST_DAY7_FUNCTIONS_H
+#ifndef AOCC_DAY7_FUNCTIONS_H
+#define AOCC_DAY7_FUNCTIONS_H
 
 #define MAX_INPUT_LENGTH 25
 
@@ -35,4 +35,4 @@ void parse_input(fs_element *root, PointerList *directories, PointerList *files)
 
 void cleanup(PointerList *directories, PointerList * files);
 
-#endif //POINTERLIST_DAY7_FUNCTIONS_H
+#endif //AOCC_DAY7_FUNCTIONS_H

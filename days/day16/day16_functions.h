@@ -2,8 +2,8 @@
 // Created by Laure on 2022-12-18.
 //
 
-#ifndef POINTERLIST_DAY16_FUNCTIONS_H
-#define POINTERLIST_DAY16_FUNCTIONS_H
+#ifndef AOCC_DAY16_FUNCTIONS_H
+#define AOCC_DAY16_FUNCTIONS_H
 
 #include "../../library/pointerList.h"
 #include <stdint.h>
@@ -56,4 +56,4 @@ void link_outgoing_edges(PointerList *names, PointerList *nodes, PointerList *ed
 
 int **calculate_minimum_distances(PointerList *nodes);
 
-#endif //POINTERLIST_DAY16_FUNCTIONS_H
+#endif //AOCC_DAY16_FUNCTIONS_H

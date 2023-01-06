@@ -1,5 +1,5 @@
-#ifndef POINTERLIST_DAY15_FUNCTIONS_H
-#define POINTERLIST_DAY15_FUNCTIONS_H
+#ifndef AOCC_DAY15_FUNCTIONS_H
+#define AOCC_DAY15_FUNCTIONS_H
 
 #include "../../library/pointerList.h"
 
@@ -21,4 +21,4 @@ int distance(point *p1, point *p2);
 
 sensor *create_sensor(point *position, point *beacon);
 
-#endif //POINTERLIST_DAY15_FUNCTIONS_H
+#endif //AOCC_DAY15_FUNCTIONS_H
