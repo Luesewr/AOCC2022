@@ -18,21 +18,29 @@ int main() {
     struct timespec start, end;
     clock_gettime(CLOCK_REALTIME, &start);
 
-
+    /*
+     * Parse the grid of point from the input.
+     */
     PointerList *points = initialize_pointerlist();
     PointerList *Grid3D = initialize_pointerlist_of_capacity(MAX_SIZE);
 
     parse_3D_grid(points, Grid3D, MAX_SIZE, -1);
 
+    /*
+     * Mark all the points that are outside the main cluster.
+     */
+    flood_fill_from_origin(Grid3D, MAX_SIZE);
 
-    floodfill_from_origin(Grid3D, MAX_SIZE);
-
-
+    /*
+     * Calculate the surface area and print it.
+     */
     int surface_area = calculate_surface_area(points, Grid3D);
 
     printf("%d\n", surface_area);
 
-
+    /*
+     * Delete the allocated memory.
+     */
     delete_3D_grid(Grid3D);
 
     delete_pointerlist_not_pointers(Grid3D);

@@ -27,7 +27,7 @@ int check_coords(int x, int y, int z, int max_size);
 
 void flood_outside(PointerList *Grid3D, PointerList *stack, int x, int y, int z, int max_size);
 
-void floodfill_from_origin(PointerList *Grid3D, int max_size);
+void flood_fill_from_origin(PointerList *Grid3D, int max_size);
 
 int calculate_surface_area(PointerList *points, PointerList *Grid3D);
 

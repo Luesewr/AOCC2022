@@ -11,6 +11,8 @@ set(PROJECT_HEADERS
 #        days/day14/day14_functions.h
 #        days/day15/day15_functions.h
 #        days/day16/day16_functions.h
+#        days/day17/day17_functions.h
+#        days/day18/day18_functions.h
         library/pointerList.h library/intList.h)
 
 set(PROJECT_SOURCES
@@ -53,8 +55,10 @@ set(PROJECT_SOURCES
 #        days/day16/day16_functions.c
 #        days/day16/day16_1.c
 #        days/day16/day16_2.c
+#        days/day17/day17_functions.c
 #        days/day17/day17_1.c
 #        days/day17/day17_2.c
+#        days/day18/day18_functions.c
 #        days/day18/day18_1.c
 #        days/day18/day18_2.c
 #        days/day19/day19_1.c
