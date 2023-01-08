@@ -138,7 +138,8 @@ int main() {
         /*
          * Go through all the nodes.
          */
-        for (int i = 0; i < nodes_size; i++) {
+        for (int i = nodes_size - 1; i >= 0; i--) {
+            int node_index = get_int(traversal_order, i);
 
             /*
              * Check if this node is already visited and if the time that it would give it
@@ -146,8 +147,8 @@ int main() {
              */
             int new_minutes_left;
 
-            if (    (!bitAt(current_visited, i)) &&
-                    (new_minutes_left = current_element->minutes_left - distances[current_element->node_id][i] - 1) &&
+            if (    (!bitAt(current_visited, node_index)) &&
+                    (new_minutes_left = current_element->minutes_left - distances[current_element->node_id][node_index] - 1) &&
                     (new_minutes_left >= 0)) {
                 /*
                  * Mark that there was a new node available and add that node to the stack with the new calculated remaining time.
@@ -155,7 +156,7 @@ int main() {
                 could_add = 1;
 
                 StackElement *new_element = malloc(sizeof(StackElement));
-                StackElement new_element_values = {i, current_element->total, new_minutes_left, setBitOneAt(current_visited, i), tail};
+                StackElement new_element_values = {node_index, current_element->total, new_minutes_left, setBitOneAt(current_visited, node_index), tail};
                 *new_element = new_element_values;
 
                 tail = new_element;
