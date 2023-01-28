@@ -14,10 +14,25 @@ typedef struct Face {
     int y;
 } Face;
 
+/**
+ * Calculates the Manhattan distance between two points.
+ * @param x1    The X-coordinate of point 1.
+ * @param y1    The Y-coordinate of point 1.
+ * @param x2    The X-coordinate of point 2.
+ * @param y2    The Y-coordinate of point 2.
+ * @return      The manhattan distance between the two given points.
+ */
 int manhattan_distance(int x1, int y1, int x2, int y2) {
     return abs(x2 - x1) + abs(y2 - y1);
 }
 
+/**
+ * Returns the index of the next face if the next point is going off the current face.
+ * @param x             The current X-coordinate within the cube face.
+ * @param y             The current Y-coordinate within the cube face.
+ * @param direction     The direction we're currently traveling in.
+ * @return              The index of the next face in the neighbours or -1.
+ */
 int get_next_face(int x, int y, int direction) {
     if (direction == 0 && x == REGION_SIZE - 1) {
         return 0;
@@ -32,81 +47,36 @@ int get_next_face(int x, int y, int direction) {
     return -1;
 }
 
-void get_next_x(Face *face, int next_face_index, int *x, int *y, int *direction) {
+/**
+ * Calculates the next coordinates
+ * @param face              The current face of the cube.
+ * @param next_face_index   The index of the next cube face.
+ * @param x                 The current X-coordinate.
+ * @param y                 The current Y-coordinate.
+ * @param direction         The current direction.
+ */
+void get_next_coordinate(Face *face, int next_face_index, int *x, int *y, int *direction) {
+    int *coordinate_variable_one = *direction % 2 == 1 ? x : y;
+    int *coordinate_variable_two = *direction % 2 == 1 ? y : x;
+    int direction_change_sign = *direction <= 1 ? 1 : -1;
+
     if (next_face_index == -1) {
-        if (*direction >= 1) {
-            *x -= 1;
-        } else {
-            *x += 1;
-        }
+        *coordinate_variable_two = *coordinate_variable_two + direction_change_sign;
         return;
     }
-    int direction_change = (face->direction_change[next_face_index] + 4) % 4;
-    if (*direction <= 1) {
-        if (direction_change == 0) {
-            *x = 0;
-        } else if (direction_change == 1) {
-            *x = (REGION_SIZE - 1) - *y;
-            *y = 0;
-        } else if (direction_change == 2) {
-            *y = (REGION_SIZE - 1) - *y;
-        } else if (direction_change == 3) {
-            *x = *y;
-            *y = (REGION_SIZE - 1);
-        }
-    } else {
-        if (direction_change == 0) {
-            *x = (REGION_SIZE - 1);
-        } else if (direction_change == 1) {
-            *x = (REGION_SIZE - 1) - *y;
-            *y = (REGION_SIZE - 1);
-        } else if (direction_change == 2) {
-            *y = (REGION_SIZE - 1) - *y;
-        } else if (direction_change == 3) {
-            *x = *y;
-            *y = 0;
-        }
-    }
-    *direction += direction_change % 4;
-    *direction %= 4;
-}
 
-void get_next_y(Face *face, int next_face_index, int *x, int *y, int *direction) {
-    if (next_face_index == -1) {
-        if (*direction >= 2) {
-            *y -= 1;
-        } else {
-            *y += 1;
-        }
-        return;
-    }
     int direction_change = (face->direction_change[next_face_index] + 4) % 4;
 
-    if (*direction <= 2) {
-        if (direction_change == 0) {
-            *y = 0;
-        } else if (direction_change == 1) {
-            *y = *x;
-            *x = (REGION_SIZE - 1);
-        } else if (direction_change == 2) {
-            *x = (REGION_SIZE - 1) - *x;
-        } else if (direction_change == 3) {
-            *x = 0;
-            *y = (REGION_SIZE - 1) - *x;
-        }
-    } else {
-        if (direction_change == 0) {
-            *y = (REGION_SIZE - 1);
-        } else if (direction_change == 1) {
-            *y = *x;
-            *x = 0;
-        } else if (direction_change == 2) {
-            *x = (REGION_SIZE - 1) - *x;
-        } else if (direction_change == 3) {
-            *y = (REGION_SIZE - 1) - *x;
-            *x = (REGION_SIZE - 1);
-        }
-    }
+    int x_possibilities[4] = {*x, (REGION_SIZE - 1), (REGION_SIZE - 1) - *x, 0};
+
+    int y_possibilities[4] = {*y, 0, (REGION_SIZE - 1) - *y, (REGION_SIZE - 1)};
+
+    int *coordinate_possibilities = *direction % 2 == 1 ? x_possibilities : y_possibilities;
+    int offset = *direction < 1 || *direction > 2 ? 1 : -1;
+
+    *coordinate_variable_one = coordinate_possibilities[(4 + direction_change * direction_change_sign) % 4];
+    *coordinate_variable_two = coordinate_possibilities[(4 + offset + direction_change * direction_change_sign) % 4];
+
     *direction += direction_change % 4;
     *direction %= 4;
 }
@@ -289,11 +259,11 @@ int main() {
                 int prev_x = x;
                 int prev_y = y;
                 int prev_direction = direction;
-                if (direction % 2 == 0) {
-                    get_next_x(current_face, next_face_index, &x, &y, &direction);
-                } else {
-                    get_next_y(current_face, next_face_index, &x, &y, &direction);
-                }
+//                if (direction % 2 == 0) {
+                get_next_coordinate(current_face, next_face_index, &x, &y, &direction);
+//                } else {
+//                    get_next_y(current_face, next_face_index, &x, &y, &direction);
+//                }
 
                 Face *next_face;
                 if (next_face_index != -1) {
